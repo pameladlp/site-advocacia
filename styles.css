@@ -1,0 +1,436 @@
+/*
+ * Estilos principais para o site de advocacia.
+ *
+ * Este arquivo define a paleta de cores, tipografia e layout responsivo
+ * inspirado no site de referência fornecido, preservando a identidade
+ * visual em tons de dourado e bege. As seções estão organizadas de
+ * maneira clara e moderna, com foco na legibilidade e na usabilidade.
+ */
+
+/* Variáveis de cores para fácil manutenção */
+:root {
+  --primary-color: #c79a3b; /* cor dourada principal */
+  --secondary-color: #f9f5ef; /* fundo claro/bege */
+  --accent-color: #e5bb5e; /* cor complementar para detalhes */
+  --dark-text: #333333; /* texto principal */
+  --light-text: #ffffff; /* texto claro */
+  --border-radius: 8px;
+}
+
+/* Reset básico e tipografia */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.6;
+  color: var(--dark-text);
+  background-color: var(--secondary-color);
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  color: var(--dark-text);
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Containers */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Navbar */
+.navbar {
+  width: 100%;
+  background-color: var(--secondary-color);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--dark-text);
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--primary-color);
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  background-image: url('../assets/bg_swirl.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  padding-top: 5rem; /* space for fixed navbar */
+}
+
+.hero .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+  z-index: 0;
+}
+
+.hero-content {
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero-text {
+  flex: 1 1 50%;
+  padding: 2rem 1rem;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-image {
+  flex: 1 1 45%;
+  text-align: center;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: var(--accent-color);
+}
+
+.btn-outline {
+  display: inline-block;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+}
+
+/* Section generic styling */
+.section {
+  padding: 4rem 0;
+}
+
+.section:nth-of-type(even) {
+  background-color: #fffdf8;
+}
+
+.section h2 {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: var(--primary-color);
+}
+
+/* Áreas de Atuação */
+.areas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.area-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--border-radius);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.area-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.area-card .icon {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.area-card h3 {
+  margin-bottom: 0.5rem;
+  color: var(--dark-text);
+}
+
+.area-card p {
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+/* Sobre nós */
+.about-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+}
+
+.about-text {
+  flex: 1 1 55%;
+}
+
+.about-text p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.about-image {
+  flex: 1 1 40%;
+  text-align: center;
+}
+
+.about-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+}
+
+/* Blog */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.blog-post {
+  background-color: #ffffff;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-post:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.post-image {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+}
+
+.blog-post h3 {
+  padding: 1rem;
+  font-size: 1.2rem;
+  color: var(--dark-text);
+}
+
+.blog-post p {
+  padding: 0 1rem 1rem;
+  flex-grow: 1;
+  color: #555555;
+  font-size: 0.95rem;
+}
+
+.read-more {
+  display: inline-block;
+  padding: 0.8rem 1rem;
+  margin: 0 1rem 1rem;
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-size: 0.9rem;
+  align-self: start;
+  transition: background-color 0.3s ease;
+}
+
+.read-more:hover {
+  background-color: var(--accent-color);
+}
+
+/* Contato */
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.contact-info {
+  flex: 1 1 40%;
+}
+
+.contact-info ul {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+.contact-info li {
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  color: #555555;
+}
+
+.contact-info i {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+.contact-form {
+  flex: 1 1 55%;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.contact-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.contact-form label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.contact-form button {
+  margin-top: 1rem;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  padding: 1.5rem 0;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer p {
+  margin-bottom: 0.5rem;
+}
+
+.social-links a {
+  color: var(--light-text);
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #fdf3d9;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero-image {
+    margin-top: 2rem;
+  }
+  .contact-container {
+    flex-direction: column;
+  }
+  .contact-form {
+    width: 100%;
+  }
+  .contact-info {
+    width: 100%;
+  }
+  .nav-links {
+    gap: 1rem;
+  }
+}
