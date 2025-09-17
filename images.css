@@ -16,12 +16,28 @@
 .reception {
   background: var(--background);
   padding: 3rem 2rem;
-  text-align: center;
+  text-align: center; /* Centraliza a imagem */
 }
 
 .reception img {
-  width: 100%;
+  width: 60%;          /* padrão para desktop */
+  max-width: 700px;    /* limite máximo */
   height: auto;
   border-radius: 0.6rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .reception img {
+    width: 75%;       /* tablets */
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .reception img {
+    width: 90%;       /* celulares */
+    max-width: 100%;
+  }
 }
