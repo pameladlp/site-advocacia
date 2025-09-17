@@ -20,7 +20,7 @@
 }
 
 .reception img {
-  width: 60%;          /* padrão para desktop */
+  width: 40%;          /* padrão para desktop */
   max-width: 700px;    /* limite máximo */
   height: auto;
   border-radius: 0.6rem;
