@@ -1,0 +1,27 @@
+/* External stylesheet for image-related classes */
+
+/* Ensure that the logo image is properly sized and maintains its aspect ratio */
+.logo-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+/* Hide any leftover circle placeholder for the logo */
+.logo-circle-text {
+  display: none;
+}
+
+/* Reception section styling */
+.reception {
+  background: var(--background);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.reception img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.6rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}

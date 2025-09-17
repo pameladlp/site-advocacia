@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D'Paula Advocacia &amp; Consultoria</title>
+    <!-- Import Google Fonts for elegant typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Import Font Awesome for service icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Core palette */
+      :root {
+        /* A refined neutral palette inspired by the provided design */
+        --background: #faf5ee;
+        --beige-section: #f5f1e8;
+        --primary: #c1a265; /* soft gold for accents */
+        --primary-dark: #9e7c43;
+        --text: #2a2a2a;
+        --subtext: #6a6a6a;
+        --card-bg: #fbf9f5;
+        --border: #e4d9c9;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Montserrat", sans-serif;
+        background: var(--background);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      /* Typography overrides for headings */
+      h1, h2, h3 {
+        font-family: "Playfair Display", serif;
+        margin: 0;
+      }
+
+      /* Navigation bar */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 3rem;
+        background: var(--background);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      /* Logo styling */
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+      /* Remove the circular DP placeholder and instead size the logo image */
+      .logo-img {
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
+      }
+
+      /* Legacy style retained for reference (no longer used) */
+      .logo-circle-text {
+        display: none;
+      }
+
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      nav li a {
+        text-decoration: none;
+        color: var(--text);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+
+      nav li a:hover {
+        color: var(--primary);
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        padding: 0.7rem 1.4rem;
+        border: none;
+        border-radius: 0.3rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s ease;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--primary-dark);
+        padding: 0.7rem 1.4rem;
+        border: 2px solid var(--primary-dark);
+        border-radius: 0.3rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+
+      .btn-secondary:hover {
+        background: var(--primary-dark);
+        color: #fff;
+      }
+
+      /* Hero section */
+      .hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 6rem 3rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .hero h1 {
+        font-size: 3.2rem;
+        line-height: 1.2;
+        font-weight: 700;
+        color: var(--text);
+        max-width: 800px;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-sub {
+        font-size: 1.1rem;
+        max-width: 800px;
+        color: var(--subtext);
+        margin-bottom: 2rem;
+      }
+
+      .hero-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .hero .hero-btn {
+        margin-top: 1.5rem;
+      }
+
+      .hero span.highlight {
+        color: var(--primary);
+      }
+
+      /* Section headings */
+      section {
+        padding: 4rem 2.5rem;
+      }
+
+      section h2 {
+        font-size: 2.2rem;
+        margin-bottom: 1.2rem;
+        color: var(--primary-dark);
+        text-transform: uppercase;
+        letter-spacing: 0.05rem;
+      }
+
+      /* Sobre nós */
+      .sobre-nos {
+        background: var(--beige-section);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+      .sobre-nos p {
+        font-size: 1rem;
+        color: var(--subtext);
+        max-width: 900px;
+        margin-bottom: 0;
+      }
+
+      /* Serviços */
+      .servicos {
+        background: var(--background);
+      }
+      .servicos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+
+      .servico {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .servico:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+      }
+
+      .servico .icon {
+        font-size: 2.5rem;
+        color: var(--primary-dark);
+        margin-bottom: 1rem;
+      }
+
+      .servico h3 {
+        font-size: 1.4rem;
+        margin: 0.5rem 0 0.7rem;
+        color: var(--text);
+      }
+
+      .servico p {
+        font-size: 0.95rem;
+        color: var(--subtext);
+        line-height: 1.5;
+      }
+
+      /* Contato / Call to action */
+      .contato {
+        background: var(--beige-section);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        text-align: center;
+        padding: 3rem 2rem;
+      }
+
+      .contato h2 {
+        margin-bottom: 0.8rem;
+        font-size: 2rem;
+        color: var(--primary-dark);
+      }
+
+      .contato p {
+        font-size: 1.1rem;
+        margin: 0.3rem 0;
+        color: var(--subtext);
+      }
+
+      .contato a {
+        margin-top: 1.5rem;
+      }
+
+      /* Reception image section */
+      .reception {
+        background: var(--background);
+        padding: 3rem 2rem;
+        text-align: center;
+      }
+
+      .reception img {
+        width: 100%;
+        height: auto;
+        border-radius: 0.6rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      /* WhatsApp call to action */
+      .whatsapp-cta {
+        text-align: center;
+        background: var(--card-bg);
+        border-top: 1px solid var(--border);
+        padding: 3rem 2rem;
+      }
+      .whatsapp-cta h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-dark);
+      }
+      .whatsapp-cta p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        color: var(--subtext);
+      }
+
+      /* Footer */
+      footer {
+        background: var(--background);
+        padding: 1.5rem 2rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--subtext);
+      }
+
+      .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+      .footer-inner span {
+        color: var(--primary-dark);
+        font-family: "Playfair Display", serif;
+      }
+
+      /* Responsiveness */
+      @media (max-width: 768px) {
+        nav {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        nav ul {
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+        .hero {
+          padding: 4rem 2rem;
+        }
+        .hero h1 {
+          font-size: 2.4rem;
+          text-align: center;
+        }
+        .hero .btn-primary {
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .servicos-grid {
+          gap: 1.5rem;
+        }
+        .servico {
+          padding: 1.5rem;
+        }
+        .contato h2 {
+          font-size: 1.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <div class="logo">
+        <!-- Replace the DP placeholder with the actual logo image -->
+        <img src="./Logo.png" alt="D'Paula Advogados logo" class="logo-img" />
+      </div>
+      <ul>
+        <li><a href="index.html" target="_blank">Início</a></li>
+        <li><a href="sobre.html" target="_blank">Sobre</a></li>
+        <li><a href="areas.html" target="_blank">Serviços</a></li>
+        <li><a href="noticias.html" target="_blank">Notícias</a></li>
+        <li><a href="contato.html" target="_blank">Contato</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+      <h1>Soluções Jurídicas para Você</h1>
+      <p class="hero-sub">
+        Oferecemos assessoria especializada com foco em resultados.
+      </p>
+      <div class="hero-buttons">
+        <!-- Chamada principal para contato via WhatsApp -->
+        <a href="https://wa.me/558179029041" target="_blank" class="btn-primary">Entre em Contato</a>
+        <!-- Segunda chamada convidando o visitante a saber mais sobre o escritório -->
+        <a href="sobre.html" target="_blank" class="btn-secondary">Saiba Mais</a>
+      </div>
+    </section>
+
+    <!-- WhatsApp Call to Action -->
+    <section class="whatsapp-cta">
+      <h2>Fale conosco pelo WhatsApp</h2>
+      <p>Precisa de ajuda imediata? Clique no botão abaixo para conversar conosco via WhatsApp.</p>
+      <a href="https://wa.me/558179029041" target="_blank" class="btn-primary">Enviar mensagem</a>
+    </section>
+
+    <!-- Sobre Nós -->
+    <section id="sobre" class="sobre-nos">
+      <h2>Sobre Nós</h2>
+      <p>
+        Um escritório de advocacia dedicado à excelência, com vasta experiência e
+        compromisso com a ética e a justiça.
+      </p>
+    </section>
+
+    <!-- Nossos Serviços -->
+    <section id="servicos" class="servicos">
+       <h2>Nossos Serviços</h2>
+      <div class="servicos-grid">
+        <div class="servico">
+          <div class="icon"><i class="fa-solid fa-scale-balanced"></i></div>
+          <h3>Execução Penal</h3>
+          <p>
+            Defesa estratégica em progressão, remição, benefícios e prisão
+            domiciliar ilegal cabível.
+          </p>
+        </div>
+        <div class="servico">
+          <div class="icon"><i class="fa-solid fa-briefcase"></i></div>
+          <h3>Trabalhista Bancário</h3>
+          <p>
+            Especialistas em 7ª e 8ª horas, horas extras, intervalo, equiparação,
+            desvio de função, periculosidade e reintegração.
+          </p>
+        </div>
+        <div class="servico">
+          <div class="icon"><i class="fa-solid fa-universal-access"></i></div>
+          <h3>LOAS/BPC</h3>
+          <p>
+            Garantia constitucional que assegura um salário mínimo mensal a
+            idosos e pessoas com deficiência.
+          </p>
+        </div>
+        <div class="servico">
+          <div class="icon"><i class="fa-solid fa-graduation-cap"></i></div>
+          <h3>Concursos Públicos</h3>
+          <p>
+            Proteção do seu direito à aprovação e posse, intervindo em situações que
+            podem comprometer seu futuro.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reception / Office Image Section -->
+    <section class="reception">
+      <img src="./recepcao.png" alt="Recepção do escritório D'Paula" />
+    </section>
+
+    <!-- Contato -->
+    <section id="contato" class="contato">
+      <h2>Contato</h2>
+      <p>WhatsApp: +55 81 97902-9041</p>
+      <p>E-mail: contato@dpaulaadvogados.com.br</p>
+      <p>Instagram: <a href="https://instagram.com/dpaula.advogados" target="_blank">@dpaula.advogados</a></p>
+      <p>Atendimento: Todo o Brasil</p>
+      <p>Horário: Seg–Sex 8h às 18h</p>
+    </section>
+
+    <footer>
+      <div class="footer-inner">
+        <span>Defendemos seus direitos com seriedade e humanidade há 7 anos.</span>
+      </div>
+      <div style="margin-top:0.5rem; font-size:0.7rem;">&copy; 2025 D'Paula Advogados. Todos os direitos reservados.</div>
+    </footer>
+  </body>
+</html>
