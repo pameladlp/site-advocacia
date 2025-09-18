@@ -14,11 +14,13 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v4
 
-      # Se futuramente usar React/Vue/etc, adicione build aqui.
-      # Para HTML estático não precisa.
+      # Para HTML puro não precisa de build extra.
+      # Se futuramente usar React/Vue/etc, adicione aqui.
 
       - name: Deploy PR Preview
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: .
           preview-branch: gh-pages
+          cname: false   # Impede que o preview use seu domínio customizado
+
