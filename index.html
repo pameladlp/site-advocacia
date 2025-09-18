@@ -9,10 +9,18 @@
   <meta property="og:description" content="Defendemos seus direitos com seriedade e humanidade." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="pt_BR" />
+
+  <!-- Favicon (logo na aba do navegador) -->
+  <link rel="icon" type="image/png" href="./img/Logo.png">
+  <link rel="apple-touch-icon" href="./img/Logo.png">
+  <meta name="theme-color" content="#CFB370">
+
+  <!-- Fontes e Tailwind -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     /* Paleta oficial */
     :root{
@@ -38,6 +46,10 @@
     .btn-outline{border:1px solid var(--border);color:var(--text);border-radius:9999px;padding:.75rem 1.25rem;font-weight:600}
     .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
     a{color:var(--link)} a:hover{color:var(--gold)}
+
+    /* Correção para títulos com hover dourado na grade de áreas */
+    .text-gold{color:var(--gold)}
+    .group:hover .group-hover\:text-gold{color:var(--gold)}
   </style>
 </head>
 <body>
@@ -46,7 +58,6 @@
     <div class="max-w-7xl mx-auto container-pad">
       <div class="flex items-center justify-between h-16">
         <a href="#top" class="flex items-center gap-3">
-          <!-- LOGO sem recorte: usar ./img/Logo.png -->
           <img src="./img/Logo.png" alt="D’Paula Advogados — logomarca" class="h-10 w-10 rounded-lg bg-white border-2" style="object-fit:contain;border-color:var(--gold)"/>
           <div class="leading-tight">
             <span class="block font-extrabold tracking-tight">D’Paula Advogados</span>
@@ -85,8 +96,12 @@
     <div class="max-w-7xl mx-auto container-pad">
       <div class="grid lg:grid-cols-2 gap-10 items-center py-14">
         <div>
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">Defendemos seus direitos com <span style="color:var(--gold)">seriedade</span> e <span style="color:var(--gold)">humanidade</span>.</h1>
-          <p class="mt-4 text-lg" style="color:var(--link)">Atuação especializada em Execução Penal, Trabalhista Bancário, LOAS/BPC e Concursos Públicos. Há 7 anos oferecendo defesa técnica, acessível e humana em todo o Brasil.</p>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+            Defendemos seus direitos com <span style="color:var(--gold)">seriedade</span> e <span style="color:var(--gold)">humanidade</span>.
+          </h1>
+          <p class="mt-4 text-lg" style="color:var(--link)">
+            Atuação especializada em Execução Penal, Trabalhista Bancário, LOAS/BPC e Concursos Públicos. Há 7 anos oferecendo defesa técnica, acessível e humana em todo o Brasil.
+          </p>
           <div class="mt-6 flex flex-wrap gap-3" id="cta">
             <a href="https://wa.me/5581979029041?text=Oi%2C%20tudo%20bem%3F%20Falo%20com%20a%20equipe%20da%20D%E2%80%99Paula%20Advogados%3F" class="btn-gold">Falar no WhatsApp</a>
             <a href="#areas" class="btn-outline">Conheça nossas áreas</a>
@@ -124,7 +139,7 @@
     </div>
   </section>
 
-  <!-- Áreas de Atuação -->
+  <!-- Áreas de Atuação (grade) -->
   <section id="areas" class="py-16" style="background:#fff">
     <div class="max-w-7xl mx-auto container-pad">
       <h2 class="text-2xl sm:text-3xl font-extrabold">Áreas de Atuação</h2>
@@ -133,26 +148,212 @@
         <a href="#execucao-penal" class="group block rounded-2xl card p-6 shadow-soft hover:shadow-md transition">
           <h3 class="font-bold group-hover:text-gold">Execução Penal</h3>
           <p class="mt-2 text-sm" style="color:var(--link)">Progressão, remição, livramento, domiciliar, indulto e comutação.</p>
-          <span class="mt-4 inline-block text-sm font-semibold" style="color:var(--gold)">Saiba mais →</span>
+          <span class="mt-4 inline-block text-sm font-semibold text-gold">Saiba mais →</span>
         </a>
         <a href="#trabalhista-bancario" class="group block rounded-2xl card p-6 shadow-soft hover:shadow-md transition">
           <h3 class="font-bold group-hover:text-gold">Trabalhista Bancário</h3>
           <p class="mt-2 text-sm" style="color:var(--link)">7ª e 8ª horas, extras, intervalos, desvio, equiparação, reintegração.</p>
-          <span class="mt-4 inline-block text-sm font-semibold" style="color:var(--gold)">Saiba mais →</span>
+          <span class="mt-4 inline-block text-sm font-semibold text-gold">Saiba mais →</span>
         </a>
         <a href="#loas" class="group block rounded-2xl card p-6 shadow-soft hover:shadow-md transition">
           <h3 class="font-bold group-hover:text-gold">LOAS / BPC</h3>
           <p class="mt-2 text-sm" style="color:var(--link)">Requerimentos, recursos, ações judiciais e revisão de benefícios.</p>
-          <span class="mt-4 inline-block text-sm font-semibold" style="color:var(--gold)">Saiba mais →</span>
+          <span class="mt-4 inline-block text-sm font-semibold text-gold">Saiba mais →</span>
         </a>
         <a href="#concursos" class="group block rounded-2xl card p-6 shadow-soft hover:shadow-md transition">
           <h3 class="font-bold group-hover:text-gold">Concursos Públicos</h3>
           <p class="mt-2 text-sm" style="color:var(--link)">Editais, PCD, cotas raciais, isenção, títulos, carência e posse.</p>
-          <span class="mt-4 inline-block text-sm font-semibold" style="color:var(--gold)">Saiba mais →</span>
+          <span class="mt-4 inline-block text-sm font-semibold text-gold">Saiba mais →</span>
         </a>
       </div>
     </div>
   </section>
+
+  <!-- ********** Áreas detalhadas (importadas e adaptadas) ********** -->
+  <!-- Execução Penal -->
+  <section id="execucao-penal" class="py-16" style="background:#fff">
+    <div class="max-w-7xl mx-auto container-pad">
+      <div class="grid lg:grid-cols-3 gap-8 items-start">
+        <div class="lg:col-span-2 space-y-6">
+          <h2 class="text-3xl font-extrabold">Execução Penal — Defesa Estratégica dos Seus Direitos</h2>
+          <p style="color:var(--link)">Oferecemos defesa técnica e humana para garantir seus direitos na execução penal.</p>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Progressão de regime</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Assessoria completa para progressão quando preenchidos os requisitos.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Remição de pena</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Pedidos por trabalho ou estudo, com documentação adequada.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Livramento condicional</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Requerimento e acompanhamento até a decisão.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Prisão domiciliar</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Solicitação quando prevista em lei e em situações excepcionais.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft md:col-span-2">
+              <h3 class="font-bold">Indulto e comutação</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Pedidos de perdão ou redução de pena conforme decretos vigentes.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="rounded-2xl card p-6 shadow-soft">
+          <h3 class="text-lg font-extrabold">Precisa de suporte?</h3>
+          <p class="mt-2" style="color:var(--link)">Fale agora com a equipe e receba orientação inicial.</p>
+          <a href="https://wa.me/5581979029041?text=Oi%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20Execu%C3%A7%C3%A3o%20Penal." class="mt-4 inline-flex w-full items-center justify-center btn-gold text-center">
+            WhatsApp — Execução Penal
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trabalhista Bancário -->
+  <section id="trabalhista-bancario" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto container-pad">
+      <div class="grid lg:grid-cols-3 gap-8 items-start">
+        <div class="lg:col-span-2 space-y-6">
+          <h2 class="text-3xl font-extrabold">Trabalhista Bancário — Seus Direitos Reconhecidos</h2>
+          <p style="color:var(--link)">Atuação técnica para combater metas abusivas e assegurar o correto pagamento de verbas.</p>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">7ª e 8ª horas</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Reconhecimento de jornada especial e diferenças salariais.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Horas extras e intervalos</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Cálculo e cobrança das horas devidas e intrajornada.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Desvio/acúmulo de função</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Adequação de cargo e diferenças por funções exercidas.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Equiparação salarial</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Comparativo com paradigma e busca de isonomia.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Reintegração/estabilidade</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Gestante, acidente, dirigente sindical e outras hipóteses.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Assédio por metas</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Medidas para cessar abusos e indenização por dano moral.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="rounded-2xl card p-6 shadow-soft">
+          <h3 class="text-lg font-extrabold">Fale com o time</h3>
+          <p class="mt-2" style="color:var(--link)">Analisamos seu caso bancário com sigilo e objetividade.</p>
+          <a href="https://wa.me/5581979029041?text=Oi%2C%20preciso%20de%20ajuda%20em%20uma%20demanda%20Trabalhista%20Banc%C3%A1ria." class="mt-4 inline-flex w-full items-center justify-center btn-gold">
+            WhatsApp — Trabalhista Bancário
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOAS / BPC -->
+  <section id="loas" class="py-16">
+    <div class="max-w-7xl mx-auto container-pad">
+      <div class="grid lg:grid-cols-3 gap-8 items-start">
+        <div class="lg:col-span-2 space-y-6">
+          <h2 class="text-3xl font-extrabold">LOAS / BPC — Proteção Social Efetiva</h2>
+          <p style="color:var(--link)">Atuação completa do requerimento ao processo judicial, com linguagem simples.</p>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Requerimento administrativo</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Organização de documentos e protocolo no INSS.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Recurso de indeferimento</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Impugnação técnica de negativa e diligências.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Ação judicial</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Concessão, restabelecimento e tutela de urgência.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Revisão do benefício</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Atualização de renda, composição familiar e cessação indevida.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Laudos e CadÚnico</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Apoio em laudo médico/social e regularização no CadÚnico.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Curatela/representação</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Providências para recebimento por representante legal.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="rounded-2xl card p-6 shadow-soft">
+          <h3 class="text-lg font-extrabold">Oriente-se agora</h3>
+          <p class="mt-2" style="color:var(--link)">Verificamos critérios de renda e deficiência/incapacidade.</p>
+          <a href="https://wa.me/5581979029041?text=Oi%2C%20gostaria%20de%20orienta%C3%A7%C3%A3o%20sobre%20LOAS%2FBPC." class="mt-4 inline-flex w-full items-center justify-center btn-gold">
+            WhatsApp — LOAS/BPC
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Concursos Públicos -->
+  <section id="concursos" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto container-pad">
+      <div class="grid lg:grid-cols-3 gap-8 items-start">
+        <div class="lg:col-span-2 space-y-6">
+          <h2 class="text-3xl font-extrabold">Concursos Públicos — Assessoria Completa</h2>
+          <p style="color:var(--link)">Acompanhamento estratégico do edital à posse, com foco em PCD e cotas raciais.</p>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Impugnação de edital</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Correção de ilegalidades e proteção de direitos do candidato.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">PCD e adaptações</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Laudo, compatibilidade e recursos contra indeferimentos.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Cotas raciais</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Heteroidentificação e defesa em reprovações indevidas.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Isenção e títulos</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Pedidos de isenção, análise de títulos e pontuações.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Fase objetiva/discursiva</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Recursos de questões, gabarito e notas.</p>
+            </div>
+            <div class="rounded-2xl card p-6 shadow-soft">
+              <h3 class="font-bold">Posse e nomeação</h3>
+              <p class="mt-2 text-sm" style="color:var(--link)">Carência, acúmulo de cargos e discussões pós-homologação.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="rounded-2xl card p-6 shadow-soft">
+          <h3 class="text-lg font-extrabold">Atendimento rápido</h3>
+          <p class="mt-2" style="color:var(--link)">Relate seu caso e receba orientação inicial objetiva.</p>
+          <a href="https://wa.me/5581979029041?text=Oi%2C%20preciso%20de%20ajuda%20em%20quest%C3%B5es%20de%20Concurso%20P%C3%BAblico." class="mt-4 inline-flex w-full items-center justify-center btn-gold">
+            WhatsApp — Concursos
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+  <!-- ********** /Áreas detalhadas ********** -->
 
   <!-- Diferenciais -->
   <section id="diferenciais" class="py-16" style="background:var(--bg2)">
@@ -239,7 +440,7 @@
           <ul class="mt-2 space-y-1 text-sm" style="color:var(--link)">
             <li>WhatsApp: <a class="underline" href="https://wa.me/5581979029041">(81) 97902-9041</a></li>
             <li>Instagram: <a class="underline" href="https://www.instagram.com/dpaula.advogados">@dpaula.advogados</a></li>
-            <li>E‑mail: <a class="underline" href="mailto:dpaula.escritorioadv@gmail.com">dpaula.escritorioadv@gmail.com</a></li>
+            <li>E-mail: <a class="underline" href="mailto:dpaula.escritorioadv@gmail.com">dpaula.escritorioadv@gmail.com</a></li>
           </ul>
         </div>
         <div>
