@@ -94,7 +94,7 @@
       <div class="flex items-center justify-between h-16">
         <a href="#top" class="flex items-center gap-3" aria-label="Ir para o topo">
           <!-- Logo sem moldura -->
-          <img src="./img/Logo.png" alt="Logomarca D’Paula Advogados" class="h-10 w-10" style="object-fit:contain" />
+          <img src="./img/Logo.png" alt="Logomarca D’Paula Advogados" class="h-10 w-10" style="object-fit:contain" --tw-ring-color: var(--gold);"/>
           <div class="leading-tight">
             <span class="block font-extrabold tracking-tight">D’Paula Advogados</span>
             <span class="block text-xs" style="color:var(--link)">Defesa técnica, acessível e humana</span>
@@ -525,5 +525,21 @@
     const mobileNav = document.getElementById('mobileNav');
     btnMenu?.addEventListener('click', ()=> mobileNav.classList.toggle('hidden'));
   </script>
+  <script>
+  // Força que links externos abram em nova aba
+  (function () {
+    const anchors = document.querySelectorAll('a[href^="http"]');
+    anchors.forEach(a => {
+      try {
+        const url = new URL(a.getAttribute('href'), location.href);
+        if (url.host !== location.host) {
+          a.setAttribute('target', '_blank');
+          a.setAttribute('rel', 'noopener noreferrer');
+        }
+      } catch (e) { /* ignora URLs inválidas */ }
+    });
+  })();
+</script>
+
 </body>
 </html>
