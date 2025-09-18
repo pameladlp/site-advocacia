@@ -5,14 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>D’Paula Advogados — Defesa técnica, acessível e humana</title>
   <meta name="description" content="Escritório com atuação especializada em Execução Penal, Trabalhista Bancário, LOAS/BPC e Concursos Públicos. Atendimento online em todo o Brasil." />
-  <meta property="og:title" content="D’Paula Advogados" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://dpaulaadvogados.com.br/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="D’Paula Advogados — Defesa técnica, acessível e humana" />
   <meta property="og:description" content="Defendemos seus direitos com seriedade e humanidade." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="pt_BR" />
+  <meta property="og:url" content="https://dpaulaadvogados.com.br/" />
+  <!-- Substitua a imagem abaixo pelo seu arquivo real -->
+  <meta property="og:image" content="https://dpaulaadvogados.com.br/img/og-cover.jpg" />
 
-  <!-- Favicon (logo na aba do navegador) -->
-  <link rel="icon" type="image/png" href="./img/Logo.png border-color:var(--gold)">
-  <link rel="apple-touch-icon" href="./img/Logo.png border-color:var(--gold)">
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="D’Paula Advogados — Defesa técnica, acessível e humana" />
+  <meta name="twitter:description" content="Defendemos seus direitos com seriedade e humanidade." />
+  <meta name="twitter:image" content="https://dpaulaadvogados.com.br/img/og-cover.jpg" />
+
+  <!-- Favicon / App Icons (caminhos limpos, sem CSS embutido) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
+  <link rel="manifest" href="./site.webmanifest">
   <meta name="theme-color" content="#CFB370">
 
   <!-- Fontes e Tailwind -->
@@ -31,6 +47,7 @@
       --bg2:#F4EFE5;            /* faixas/caixas */
       --bg3:#FBF6EF;            /* variação sutil */
       --border:#E6E2D8;
+      --header-h:64px;          /* h-16 */
     }
     html{scroll-behavior:smooth}
     body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg1);color:var(--text)}
@@ -47,43 +64,67 @@
     .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
     a{color:var(--link)} a:hover{color:var(--gold)}
 
-    /* Correção para títulos com hover dourado na grade de áreas */
-    .text-gold{color:var(--gold)}
+    /* Hover dourado na grade de áreas */
     .group:hover .group-hover\:text-gold{color:var(--gold)}
+    .text-gold{color:var(--gold)}
+
+    /* Compensação do header fixo para âncoras */
+    section[id]{scroll-margin-top:calc(var(--header-h) + 16px)}
   </style>
+
+  <!-- Dados estruturados -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LegalService",
+    "name": "D’Paula Advogados",
+    "url": "https://dpaulaadvogados.com.br/",
+    "logo": "https://dpaulaadvogados.com.br/img/Logo.png",
+    "image": "https://dpaulaadvogados.com.br/img/og-cover.jpg",
+    "areaServed": "BR",
+    "sameAs": ["https://www.instagram.com/dpaula.advogados"],
+    "telephone": "+55-81-97902-9041"
+  }
+  </script>
 </head>
 <body>
   <!-- Header -->
   <header id="top" class="sticky top-0 z-50 border-b border-soft glass">
     <div class="max-w-7xl mx-auto container-pad">
       <div class="flex items-center justify-between h-16">
-        <a href="#top" class="flex items-center gap-3">
-          <img src="./img/Logo.png" alt="D’Paula Advogados — logomarca" class="h-10 w-10 rounded-lg bg-white border-2" style="object-fit:contain;border-color:var(--gold)"/>
+        <a href="#top" class="flex items-center gap-3" aria-label="Ir para o topo">
+          <!-- Logo sem moldura -->
+          <img src="./img/Logo.png" alt="Logomarca D’Paula Advogados" class="h-10 w-10" style="object-fit:contain" />
           <div class="leading-tight">
             <span class="block font-extrabold tracking-tight">D’Paula Advogados</span>
             <span class="block text-xs" style="color:var(--link)">Defesa técnica, acessível e humana</span>
           </div>
         </a>
-        <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-          <a href="#paula">Paula</a>
+
+        <!-- Sumário (ordem refletindo o conteúdo) -->
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium" aria-label="Navegação principal">
+          <a href="#quem-somos">Quem Somos</a>
           <a href="#areas">Áreas</a>
+          <a href="#paula">Paula</a>
           <a href="#diferenciais">Diferenciais</a>
           <a href="#como-funciona">Como Funciona</a>
-          <a href="#quem-somos">Quem Somos</a>
           <a href="#contato">Contato</a>
-          <a href="#cta" class="btn-gold">Falar no WhatsApp</a>
+          <a href="#cta" class="btn-gold" aria-label="Falar com a equipe via WhatsApp">Falar no WhatsApp</a>
         </nav>
+
+        <!-- Menu mobile -->
         <button id="btnMenu" class="md:hidden inline-flex items-center justify-center p-2 rounded-md border border-soft" aria-label="Abrir menu" style="color:var(--link)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.75h16.5M3.75 12h16.5M3.75 18.25h16.5"/></svg>
         </button>
       </div>
-      <nav id="mobileNav" class="md:hidden hidden pb-4 text-sm">
+
+      <nav id="mobileNav" class="md:hidden hidden pb-4 text-sm" aria-label="Navegação mobile">
         <div class="grid gap-2">
           <a href="#quem-somos" class="px-2 py-2 rounded">Quem Somos</a>
           <a href="#areas" class="px-2 py-2 rounded">Áreas</a>
+          <a href="#paula" class="px-2 py-2 rounded">Paula</a>
           <a href="#diferenciais" class="px-2 py-2 rounded">Diferenciais</a>
           <a href="#como-funciona" class="px-2 py-2 rounded">Como Funciona</a>
-          <a href="#paula" class="px-2 py-2 rounded">Paula</a>
           <a href="#contato" class="px-2 py-2 rounded">Contato</a>
           <a href="#cta" class="px-2 py-2 rounded text-center btn-gold">Falar no WhatsApp</a>
         </div>
@@ -100,7 +141,7 @@
             Defendemos seus direitos com <span style="color:var(--gold)">seriedade</span> e <span style="color:var(--gold)">humanidade</span>.
           </h1>
           <p class="mt-4 text-lg" style="color:var(--link)">
-            Atuação especializada em Concurso Públicos, Trabalhista Bancário, LOAS/BPC e Execução Penal. Há mais de 10 anos oferecendo defesa técnica, acessível e humana em todo o Brasil.
+            Atuação especializada em <strong>Concursos Públicos</strong>, Trabalhista Bancário, LOAS/BPC e Execução Penal. Há mais de 10 anos oferecendo defesa técnica, acessível e humana em todo o Brasil.
           </p>
           <div class="mt-6 flex flex-wrap gap-3" id="cta">
             <a href="https://wa.me/5581979029041?text=Oi%2C%20tudo%20bem%3F%20Falo%20com%20a%20equipe%20da%20D%E2%80%99Paula%20Advogados%3F" class="btn-gold">Falar no WhatsApp</a>
@@ -108,9 +149,17 @@
           </div>
         </div>
         <div>
+          <!-- Use arquivos locais para desempenho; mantenha os três formatos -->
           <picture>
-            <source srcset="./img/recepcao.png" type="image/png" />
-            <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1600&auto=format&fit=crop" alt="Recepção do escritório" class="w-full rounded-2xl shadow-soft" style="aspect-ratio:16/10;object-fit:cover"/>
+            <source srcset="./img/recepcao.avif" type="image/avif" />
+            <source srcset="./img/recepcao.webp" type="image/webp" />
+            <img
+              src="./img/recepcao.jpg"
+              alt="Recepção do escritório D’Paula Advogados"
+              class="w-full rounded-2xl shadow-soft"
+              style="aspect-ratio:16/10;object-fit:cover"
+              width="1600" height="1000"
+              fetchpriority="high" decoding="async" />
           </picture>
         </div>
       </div>
@@ -144,6 +193,15 @@
     <div class="max-w-7xl mx-auto container-pad">
       <h2 class="text-2xl sm:text-3xl font-extrabold">Áreas de Atuação</h2>
       <p class="mt-3" style="color:var(--link)">Especialização com foco técnico e linguagem simples, sem juridiquês desnecessário.</p>
+
+      <!-- Mini-sumário para as áreas detalhadas -->
+      <div class="mt-4 flex flex-wrap gap-2 text-sm">
+        <a href="#concursos" class="btn-outline">Concursos</a>
+        <a href="#trabalhista-bancario" class="btn-outline">Trabalhista Bancário</a>
+        <a href="#loas" class="btn-outline">LOAS/BPC</a>
+        <a href="#execucao-penal" class="btn-outline">Execução Penal</a>
+      </div>
+
       <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <a href="#concursos" class="group block rounded-2xl card p-6 shadow-soft hover:shadow-md transition">
           <h3 class="font-bold group-hover:text-gold">Concursos Públicos</h3>
@@ -169,7 +227,7 @@
     </div>
   </section>
 
-   <!-- Paula, Assistente Jurídica Virtual -->
+  <!-- Paula, Assistente Jurídica Virtual -->
   <section id="paula" class="py-16" style="background:#fff">
     <div class="max-w-7xl mx-auto container-pad">
       <div class="grid lg:grid-cols-2 gap-10 items-start">
@@ -189,7 +247,7 @@
         </div>
         <div>
           <div class="rounded-2xl card p-4 shadow-soft">
-            <video controls playsinline class="w-full rounded-xl shadow-soft" preload="metadata" poster="./img/paula.jpg">
+            <video controls playsinline class="w-full rounded-xl shadow-soft" preload="metadata" poster="./img/paula.jpg" controlslist="nodownload">
               <source src="./media/paula.mp4#t=0.5" type="video/mp4" />
               Seu navegador não suporta vídeo HTML5.
             </video>
@@ -198,8 +256,8 @@
       </div>
     </div>
   </section>
-  
-  <!-- ********** Áreas detalhadas (importadas e adaptadas) ********** -->
+
+  <!-- ********** Áreas detalhadas ********** -->
   <!-- Concursos Públicos -->
   <section id="concursos" class="py-16 bg-white">
     <div class="max-w-7xl mx-auto container-pad">
@@ -383,10 +441,9 @@
       </div>
     </div>
   </section>
-  
   <!-- ********** /Áreas detalhadas ********** -->
 
-  <!-- Diferenciais -->
+  <!-- Nossos Diferenciais -->
   <section id="diferenciais" class="py-16" style="background:var(--bg2)">
     <div class="max-w-7xl mx-auto container-pad">
       <h2 class="text-2xl sm:text-3xl font-extrabold">Nossos Diferenciais</h2>
@@ -453,17 +510,20 @@
           </ul>
         </div>
       </div>
-      <div class="mt-8 border-top border-soft pt-6 text-xs" style="color:var(--link)">
+      <div class="mt-8 border-t border-soft pt-6 text-xs" style="color:var(--link)">
         © <span id="year"></span> D’Paula Advogados. Responsável técnico: <strong>Mirella Leal Campos, OAB/PE 43.186</strong>
       </div>
     </div>
   </footer>
 
   <script>
+    // Ano no rodapé
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Toggle do menu mobile
     const btnMenu = document.getElementById('btnMenu');
     const mobileNav = document.getElementById('mobileNav');
-    btnMenu?.addEventListener('click',()=>mobileNav.classList.toggle('hidden'));
+    btnMenu?.addEventListener('click', ()=> mobileNav.classList.toggle('hidden'));
   </script>
 </body>
 </html>
