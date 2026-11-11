@@ -89,10 +89,6 @@
               <option value="7">7</option><option value="8">8</option>
             </select>
           </div>
-          <div class="field md:col-span-2">
-            <label for="codigo">Código da reserva no Airbnb <span class="font-normal" style="color:var(--muted)">(opcional, ex.: HMABC12345)</span></label>
-            <input type="text" id="codigo" name="Código da reserva" maxlength="20" autocomplete="off" style="text-transform:uppercase">
-          </div>
         </div>
       </div>
 
@@ -116,32 +112,9 @@
             <p class="err">O responsável deve ser maior de 18 anos.</p>
           </div>
           <div class="field">
-            <label for="rg">Nº do RG / documento *</label>
-            <input type="text" id="rg" name="RG" required maxlength="20">
-            <p class="err">Informe o número do documento.</p>
-          </div>
-          <div class="field">
-            <label for="orgao">Órgão emissor / UF</label>
-            <input type="text" id="orgao" name="Órgão emissor" placeholder="SDS/PE" maxlength="15" style="text-transform:uppercase">
-          </div>
-          <div class="field">
             <label for="tel">WhatsApp / celular *</label>
             <input type="tel" id="tel" name="Telefone" required autocomplete="tel" inputmode="numeric" placeholder="(81) 90000-0000" maxlength="15">
             <p class="err">Informe um telefone com DDD.</p>
-          </div>
-          <div class="field">
-            <label for="email">E-mail *</label>
-            <input type="email" id="email" name="email" required autocomplete="email">
-            <p class="err">E-mail inválido.</p>
-          </div>
-          <div class="field">
-            <label for="nacionalidade">Nacionalidade</label>
-            <input type="text" id="nacionalidade" name="Nacionalidade" value="Brasileira">
-          </div>
-          <div class="field">
-            <label for="cidade">Cidade / UF de residência *</label>
-            <input type="text" id="cidade" name="Cidade de residência" required placeholder="Recife/PE">
-            <p class="err">Informe sua cidade.</p>
           </div>
         </div>
       </div>
@@ -192,18 +165,10 @@
 
       <!-- 5. Veículo e observações -->
       <div class="card p-5 md:p-6">
-        <h2 class="flex items-center gap-3 text-lg font-bold mb-5"><span class="step" id="stepExtra">4</span> Veículo e observações</h2>
-        <div class="grid md:grid-cols-2 gap-4">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-5"><span class="step" id="stepExtra">4</span> Observações</h2>
+        <div class="grid gap-4">
           <div class="field">
-            <label for="placa">Placa do veículo <span class="font-normal" style="color:var(--muted)">(se for usar a garagem)</span></label>
-            <input type="text" id="placa" name="Placa do veículo" maxlength="8" placeholder="ABC1D23" style="text-transform:uppercase">
-          </div>
-          <div class="field">
-            <label for="modelo">Modelo / cor</label>
-            <input type="text" id="modelo" name="Modelo e cor do veículo" placeholder="Onix prata">
-          </div>
-          <div class="field md:col-span-2">
-            <label for="obs">Observações</label>
+            <label for="obs">Algo que o anfitrião precise saber? <span class="font-normal" style="color:var(--muted)">(opcional)</span></label>
             <textarea id="obs" name="Observações" rows="3" placeholder="Pets, berço, necessidades especiais..."></textarea>
           </div>
         </div>
@@ -411,10 +376,7 @@ form.addEventListener('submit', e => {
   let maior = false;
   if (nasc) { const d = new Date(nasc + 'T00:00'); d.setFullYear(d.getFullYear() + 18); maior = d <= new Date(); }
   checks.push(mark($('#nasc'), maior));
-  checks.push(mark($('#rg'), $('#rg').value.trim().length >= 4));
   checks.push(mark($('#tel'), onlyDigits($('#tel').value).length >= 10));
-  checks.push(mark($('#email'), /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('#email').value.trim())));
-  checks.push(mark($('#cidade'), $('#cidade').value.trim().length >= 2));
   document.querySelectorAll('.a-nome').forEach(i => checks.push(mark(i, i.value.trim().length >= 3)));
 
   const temFrente = frente.input.files.length > 0;
@@ -441,8 +403,6 @@ form.addEventListener('submit', e => {
   $('#acompResumo').value = acomp || 'Nenhum';
   if (!verso.input.files.length) verso.input.disabled = true; // não envia campo de arquivo vazio
 
-  $('#codigo').value = $('#codigo').value.toUpperCase();
-  $('#placa').value = $('#placa').value.toUpperCase();
   $('#fsSubject').value = `Cadastro de hóspede: ${$('#nome').value.trim()} — check-in ${fmtBR(ci.value)}`;
 
   try { sessionStorage.setItem('hospede', JSON.stringify({ nome: $('#nome').value.trim(), checkin: fmtBR(ci.value) })); } catch (err) {}
