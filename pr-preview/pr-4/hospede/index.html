@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Hóspede</title>
+  <meta name="description" content="Cadastro de hóspede para check-in na hospedagem, com envio de documento de identidade." />
+  <!-- Página com dados pessoais: não indexar em buscadores -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FF5A5F" />
+  <link rel="icon" href="../favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand:#FF5A5F; --brand-dark:#E0484D; --ink:#222222; --muted:#6A6A6A; --line:#DDDDDD; --bg:#F7F7F7; }
+    body { font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+    .card { background:#fff; border:1px solid var(--line); border-radius:16px; }
+    .field label { display:block; font-size:.875rem; font-weight:600; margin-bottom:.35rem; }
+    .field input, .field select, .field textarea {
+      width:100%; border:1px solid #B0B0B0; border-radius:10px; padding:.75rem .9rem; font-size:1rem; background:#fff;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--ink); box-shadow:0 0 0 2px rgba(34,34,34,.12); }
+    .field input.invalid, .field select.invalid { border-color:#C13515; box-shadow:0 0 0 2px rgba(193,53,21,.12); }
+    .err { color:#C13515; font-size:.8rem; margin-top:.3rem; display:none; }
+    .err.show { display:block; }
+    .btn { background:linear-gradient(90deg,#E61E4D 0%,#E31C5F 50%,#D70466 100%); color:#fff; font-weight:700; border-radius:10px; padding:.95rem 1.5rem; }
+    .btn:disabled { opacity:.6; cursor:not-allowed; }
+    .drop { border:2px dashed #B0B0B0; border-radius:14px; cursor:pointer; transition:border-color .15s, background .15s; }
+    .drop:hover, .drop.drag { border-color:var(--ink); background:#FAFAFA; }
+    .drop.invalid { border-color:#C13515; }
+    .hidden, [hidden] { display:none !important; }
+    .step { width:28px; height:28px; border-radius:999px; background:var(--ink); color:#fff; font-size:.8rem; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex:none; }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header class="bg-white border-b" style="border-color:var(--line)">
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5A5F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
+      <div>
+        <p class="font-extrabold text-lg leading-tight">Cadastro de Hóspede</p>
+        <p class="text-xs" style="color:var(--muted)">Check-in seguro · leva cerca de 3 minutos</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-8">
+
+    <section class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-extrabold mb-2">Bem-vindo(a)! 👋</h1>
+      <p style="color:var(--muted)">Para liberar seu acesso à hospedagem e à portaria do condomínio, preencha os dados abaixo e envie uma foto do seu documento de identidade (RG ou CNH). Os dados são usados apenas para o seu check-in.</p>
+    </section>
+
+    <form id="guestForm" novalidate method="POST" enctype="multipart/form-data" class="space-y-6">
+      <!-- Campos de configuração do FormSubmit (preenchidos via JS) -->
+      <input type="hidden" name="_subject" id="fsSubject" value="Novo cadastro de hóspede">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" id="fsNext" value="">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+      <!-- 1. Reserva -->
+      <div class="card p-5 md:p-6">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-5"><span class="step">1</span> Dados da reserva</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="field">
+            <label for="checkin">Data de check-in *</label>
+            <input type="date" id="checkin" name="Check-in" required>
+            <p class="err">Informe a data de chegada.</p>
+          </div>
+          <div class="field">
+            <label for="checkout">Data de check-out *</label>
+            <input type="date" id="checkout" name="Check-out" required>
+            <p class="err">A saída deve ser depois da chegada.</p>
+          </div>
+          <div class="field">
+            <label for="horario">Horário previsto de chegada</label>
+            <input type="time" id="horario" name="Horário de chegada">
+          </div>
+          <div class="field">
+            <label for="qtd">Total de hóspedes (incluindo você) *</label>
+            <select id="qtd" name="Total de hóspedes" required>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+              <option value="7">7</option><option value="8">8</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Hóspede responsável -->
+      <div class="card p-5 md:p-6">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-5"><span class="step">2</span> Hóspede responsável</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="field md:col-span-2">
+            <label for="nome">Nome completo *</label>
+            <input type="text" id="nome" name="Nome completo" required autocomplete="name" minlength="5">
+            <p class="err">Informe nome e sobrenome.</p>
+          </div>
+          <div class="field">
+            <label for="cpf">CPF *</label>
+            <input type="text" id="cpf" name="CPF" required inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+            <p class="err">CPF inválido.</p>
+          </div>
+          <div class="field">
+            <label for="nasc">Data de nascimento *</label>
+            <input type="date" id="nasc" name="Data de nascimento" required>
+            <p class="err">O responsável deve ser maior de 18 anos.</p>
+          </div>
+          <div class="field">
+            <label for="tel">WhatsApp / celular *</label>
+            <input type="tel" id="tel" name="Telefone" required autocomplete="tel" inputmode="numeric" placeholder="(81) 90000-0000" maxlength="15">
+            <p class="err">Informe um telefone com DDD.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Documento -->
+      <div class="card p-5 md:p-6">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-2"><span class="step">3</span> Foto do documento</h2>
+        <p class="text-sm mb-5" style="color:var(--muted)">Envie uma foto nítida do RG ou CNH, sem reflexos e com todos os dados legíveis. JPG, PNG ou PDF. Imagens grandes são reduzidas automaticamente antes do envio.</p>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm font-semibold mb-2">Frente *</p>
+            <label class="drop flex flex-col items-center justify-center text-center p-4 min-h-[180px]" id="dropFrente">
+              <input type="file" id="docFrente" name="attachment" accept="image/*,application/pdf" class="hidden">
+              <div class="placeholder">
+                <div class="text-3xl mb-1">🪪</div>
+                <p class="font-semibold text-sm">Tirar foto ou escolher arquivo</p>
+                <p class="text-xs" style="color:var(--muted)">Frente do documento</p>
+              </div>
+              <img class="preview hidden max-h-40 rounded-lg" alt="Pré-visualização da frente do documento">
+              <p class="filename hidden text-xs mt-2 break-all"></p>
+            </label>
+            <p class="err" id="errFrente">Envie a foto da frente do documento.</p>
+          </div>
+          <div>
+            <p class="text-sm font-semibold mb-2">Verso <span class="font-normal" style="color:var(--muted)">(se for RG)</span></p>
+            <label class="drop flex flex-col items-center justify-center text-center p-4 min-h-[180px]" id="dropVerso">
+              <input type="file" id="docVerso" name="attachment2" accept="image/*,application/pdf" class="hidden">
+              <div class="placeholder">
+                <div class="text-3xl mb-1">🔄</div>
+                <p class="font-semibold text-sm">Tirar foto ou escolher arquivo</p>
+                <p class="text-xs" style="color:var(--muted)">Verso do documento</p>
+              </div>
+              <img class="preview hidden max-h-40 rounded-lg" alt="Pré-visualização do verso do documento">
+              <p class="filename hidden text-xs mt-2 break-all"></p>
+            </label>
+            <p class="err" id="errVerso">Arquivo inválido.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Acompanhantes -->
+      <div class="card p-5 md:p-6" id="cardAcomp" hidden>
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-2"><span class="step">4</span> Acompanhantes</h2>
+        <p class="text-sm mb-5" style="color:var(--muted)">Informe nome e documento de cada pessoa que vai se hospedar com você (exigência da portaria).</p>
+        <div id="acompList" class="space-y-4"></div>
+        <input type="hidden" name="Acompanhantes" id="acompResumo">
+      </div>
+
+      <!-- 5. Veículo e observações -->
+      <div class="card p-5 md:p-6">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-5"><span class="step" id="stepExtra">4</span> Observações</h2>
+        <div class="grid gap-4">
+          <div class="field">
+            <label for="obs">Algo que o anfitrião precise saber? <span class="font-normal" style="color:var(--muted)">(opcional)</span></label>
+            <textarea id="obs" name="Observações" rows="3" placeholder="Pets, berço, necessidades especiais..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consentimento LGPD -->
+      <div class="card p-5 md:p-6">
+        <label class="flex items-start gap-3 text-sm cursor-pointer">
+          <input type="checkbox" id="lgpd" name="Consentimento LGPD" value="Sim" class="mt-1 h-5 w-5 flex-none accent-black">
+          <span>Declaro que as informações são verdadeiras e autorizo o uso dos meus dados e da imagem do meu documento <strong>exclusivamente</strong> para identificação no check-in e cadastro na portaria do condomínio, conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018). Os dados serão excluídos após o término da estadia.</span>
+        </label>
+        <p class="err" id="errLgpd">É necessário aceitar para continuar.</p>
+      </div>
+
+      <div id="formAlert" class="hidden rounded-xl p-4 text-sm font-medium" style="background:#FFF1F0;color:#C13515"></div>
+
+      <button type="submit" id="btnSubmit" class="btn w-full text-lg shadow-sm">Enviar cadastro</button>
+      <p class="text-xs text-center" style="color:var(--muted)">🔒 Os dados são enviados diretamente ao anfitrião e não ficam públicos.</p>
+    </form>
+
+    <!-- Tela de sucesso -->
+    <section id="success" class="card p-8 text-center hidden">
+      <div class="text-5xl mb-3">✅</div>
+      <h2 class="text-2xl font-extrabold mb-2">Cadastro recebido!</h2>
+      <p class="mb-6" style="color:var(--muted)">Obrigado. O anfitrião vai conferir seus dados e enviar as instruções de acesso antes do check-in.</p>
+      <a id="waLink" href="#" target="_blank" rel="noopener" class="inline-block font-semibold px-6 py-3 rounded-xl text-white" style="background:#25D366">💬 Avisar o anfitrião no WhatsApp</a>
+    </section>
+  </main>
+
+  <footer class="text-center text-xs py-8" style="color:var(--muted)">
+    Este formulário não é afiliado ao Airbnb. Dúvidas? Fale com o anfitrião pela plataforma.
+  </footer>
+
+<script>
+/* =========================================================================
+   CONFIGURAÇÃO — altere aqui
+   -------------------------------------------------------------------------
+   HOST_EMAIL : e-mail que vai receber os cadastros (com o RG em anexo).
+                No 1º envio, o FormSubmit manda um e-mail de ATIVAÇÃO para
+                esse endereço — é preciso clicar em "Activate" uma única vez.
+   HOST_WHATSAPP : número do anfitrião (DDI+DDD+número, só dígitos).
+   ========================================================================= */
+const CONFIG = {
+  HOST_EMAIL: 'dpaula.escritorioadv@gmail.com',
+  HOST_WHATSAPP: '5581979029041',
+  MAX_IMG_SIDE: 1800,          // px — reduz fotos grandes de celular
+  MAX_FILE_MB: 4.5             // limite por arquivo depois da compressão
+};
+
+const $ = (s, el = document) => el.querySelector(s);
+const form = $('#guestForm');
+form.action = 'https://formsubmit.co/' + CONFIG.HOST_EMAIL;
+
+// Após o envio, o FormSubmit redireciona de volta para esta página com ?enviado=1
+const back = new URL(location.href); back.search = '?enviado=1'; back.hash = '';
+$('#fsNext').value = back.toString();
+
+/* ---------- Tela de sucesso ---------- */
+function showSuccess() {
+  form.classList.add('hidden');
+  $('#success').classList.remove('hidden');
+  let nome = '', checkin = '';
+  try { const d = JSON.parse(sessionStorage.getItem('hospede') || '{}'); nome = d.nome || ''; checkin = d.checkin || ''; } catch (e) {}
+  const msg = `Olá! Acabei de enviar meu cadastro de hóspede${nome ? ' (' + nome + ')' : ''}${checkin ? ' para o check-in em ' + checkin : ''}.`;
+  $('#waLink').href = `https://wa.me/${CONFIG.HOST_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  window.scrollTo(0, 0);
+}
+if (new URLSearchParams(location.search).get('enviado') === '1') showSuccess();
+
+/* ---------- Máscaras ---------- */
+const onlyDigits = v => v.replace(/\D/g, '');
+$('#cpf').addEventListener('input', e => {
+  let v = onlyDigits(e.target.value).slice(0, 11);
+  v = v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  e.target.value = v;
+});
+$('#tel').addEventListener('input', e => {
+  let v = onlyDigits(e.target.value).slice(0, 11);
+  if (v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+  else if (v.length > 6) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+  else if (v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+  e.target.value = v;
+});
+
+function cpfValido(cpf) {
+  cpf = onlyDigits(cpf);
+  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+  for (let t = 9; t < 11; t++) {
+    let s = 0;
+    for (let i = 0; i < t; i++) s += +cpf[i] * (t + 1 - i);
+    if (((10 * s) % 11) % 10 !== +cpf[t]) return false;
+  }
+  return true;
+}
+
+/* ---------- Datas ---------- */
+const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+const iso = d => d.toISOString().slice(0, 10);
+$('#checkin').min = iso(new Date(hoje.getTime() - 86400000));
+$('#checkin').addEventListener('change', e => { $('#checkout').min = e.target.value; });
+const fmtBR = v => v ? v.split('-').reverse().join('/') : '';
+
+/* ---------- Acompanhantes dinâmicos ---------- */
+function renderAcomp() {
+  const n = +$('#qtd').value - 1;
+  const list = $('#acompList');
+  const atuais = [...list.children].map(c => ({ nome: $('.a-nome', c).value, doc: $('.a-doc', c).value, menor: $('.a-menor', c).checked }));
+  list.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const d = atuais[i] || {};
+    const div = document.createElement('div');
+    div.className = 'grid md:grid-cols-[1fr_200px] gap-3 items-start pb-4 border-b last:border-0';
+    div.style.borderColor = 'var(--line)';
+    div.innerHTML = `
+      <div class="field"><label>Acompanhante ${i + 1} — nome completo *</label><input type="text" class="a-nome" required><p class="err">Informe o nome.</p></div>
+      <div class="field"><label>RG ou CPF</label><input type="text" class="a-doc" maxlength="20"></div>
+      <label class="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" class="a-menor h-4 w-4 accent-black"> Menor de idade</label>`;
+    $('.a-nome', div).value = d.nome || '';
+    $('.a-doc', div).value = d.doc || '';
+    $('.a-menor', div).checked = !!d.menor;
+    list.appendChild(div);
+  }
+  $('#cardAcomp').hidden = n < 1;
+  $('#stepExtra').textContent = n < 1 ? '4' : '5';
+}
+$('#qtd').addEventListener('change', renderAcomp);
+
+/* ---------- Upload + compressão de imagem ---------- */
+async function compress(file) {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
+  try {
+    const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    const scale = Math.min(1, CONFIG.MAX_IMG_SIDE / Math.max(bmp.width, bmp.height));
+    if (scale === 1 && file.size < 1.5 * 1024 * 1024) return file;
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.85));
+    if (!blob) return file;
+    return new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' });
+  } catch (e) { return file; } // ex.: HEIC em navegador sem suporte — envia original
+}
+
+function setupDrop(dropId, inputId, errId) {
+  const drop = $('#' + dropId), input = $('#' + inputId), err = $('#' + errId);
+  const prev = $('.preview', drop), ph = $('.placeholder', drop), fn = $('.filename', drop);
+  let busy = false;
+
+  async function handle(file) {
+    err.classList.remove('show'); drop.classList.remove('invalid');
+    if (!file) return;
+    if (!/^image\/|application\/pdf/.test(file.type) && !/\.(heic|heif)$/i.test(file.name)) {
+      err.textContent = 'Formato não aceito. Use JPG, PNG ou PDF.'; err.classList.add('show'); input.value = ''; return;
+    }
+    busy = true; fn.textContent = 'Processando…'; fn.classList.remove('hidden');
+    const out = await compress(file);
+    busy = false;
+    if (out.size > CONFIG.MAX_FILE_MB * 1024 * 1024) {
+      err.textContent = `Arquivo muito grande (máx. ${CONFIG.MAX_FILE_MB} MB).`; err.classList.add('show');
+      input.value = ''; fn.classList.add('hidden'); prev.classList.add('hidden'); ph.classList.remove('hidden'); return;
+    }
+    const dt = new DataTransfer(); dt.items.add(out); input.files = dt.files;
+    fn.textContent = `${out.name} · ${(out.size / 1024).toFixed(0)} KB`;
+    if (out.type.startsWith('image/')) {
+      prev.src = URL.createObjectURL(out); prev.classList.remove('hidden'); ph.classList.add('hidden');
+    } else { prev.classList.add('hidden'); ph.classList.remove('hidden'); $('div', ph).textContent = '📄'; }
+  }
+  input.addEventListener('change', () => handle(input.files[0]));
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('drag'); }));
+  drop.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handle(e.dataTransfer.files[0]); });
+  return { isBusy: () => busy, input, drop, err };
+}
+const frente = setupDrop('dropFrente', 'docFrente', 'errFrente');
+const verso = setupDrop('dropVerso', 'docVerso', 'errVerso');
+
+/* ---------- Limpa o erro assim que o campo é corrigido ---------- */
+form.addEventListener('input', e => {
+  const el = e.target;
+  if (el.classList.contains('invalid')) { el.classList.remove('invalid'); el.closest('.field')?.querySelector('.err')?.classList.remove('show'); }
+  if (el.id === 'lgpd') $('#errLgpd').classList.remove('show');
+  if (!form.querySelector('.invalid, .err.show')) $('#formAlert').classList.add('hidden');
+});
+
+/* ---------- Validação e envio ---------- */
+function mark(el, ok) {
+  el.classList.toggle('invalid', !ok);
+  const e = el.closest('.field')?.querySelector('.err');
+  if (e) e.classList.toggle('show', !ok);
+  return ok;
+}
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const alertBox = $('#formAlert'); alertBox.classList.add('hidden');
+  if (frente.isBusy() || verso.isBusy()) { alertBox.textContent = 'Aguarde o processamento das imagens.'; alertBox.classList.remove('hidden'); return; }
+
+  const checks = [];
+  const ci = $('#checkin'), co = $('#checkout');
+  checks.push(mark(ci, !!ci.value));
+  checks.push(mark(co, !!co.value && (!ci.value || co.value > ci.value)));
+  checks.push(mark($('#nome'), $('#nome').value.trim().split(/\s+/).length >= 2));
+  checks.push(mark($('#cpf'), cpfValido($('#cpf').value)));
+  const nasc = $('#nasc').value;
+  let maior = false;
+  if (nasc) { const d = new Date(nasc + 'T00:00'); d.setFullYear(d.getFullYear() + 18); maior = d <= new Date(); }
+  checks.push(mark($('#nasc'), maior));
+  checks.push(mark($('#tel'), onlyDigits($('#tel').value).length >= 10));
+  document.querySelectorAll('.a-nome').forEach(i => checks.push(mark(i, i.value.trim().length >= 3)));
+
+  const temFrente = frente.input.files.length > 0;
+  frente.drop.classList.toggle('invalid', !temFrente);
+  if (!temFrente) { frente.err.textContent = 'Envie a foto da frente do documento.'; frente.err.classList.add('show'); }
+  checks.push(temFrente);
+
+  const lgpd = $('#lgpd').checked;
+  $('#errLgpd').classList.toggle('show', !lgpd);
+  checks.push(lgpd);
+
+  if (checks.includes(false)) {
+    alertBox.textContent = 'Confira os campos destacados em vermelho.';
+    alertBox.classList.remove('hidden');
+    const first = form.querySelector('.invalid, .err.show');
+    first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Resumo dos acompanhantes em um único campo
+  const acomp = [...document.querySelectorAll('#acompList > div')].map((c, i) =>
+    `${i + 1}) ${$('.a-nome', c).value.trim()}${$('.a-doc', c).value.trim() ? ' — Doc: ' + $('.a-doc', c).value.trim() : ''}${$('.a-menor', c).checked ? ' (menor)' : ''}`
+  ).join(' | ');
+  $('#acompResumo').value = acomp || 'Nenhum';
+  if (!verso.input.files.length) verso.input.disabled = true; // não envia campo de arquivo vazio
+
+  $('#fsSubject').value = `Cadastro de hóspede: ${$('#nome').value.trim()} — check-in ${fmtBR(ci.value)}`;
+
+  try { sessionStorage.setItem('hospede', JSON.stringify({ nome: $('#nome').value.trim(), checkin: fmtBR(ci.value) })); } catch (err) {}
+
+  const btn = $('#btnSubmit'); btn.disabled = true; btn.textContent = 'Enviando…';
+  HTMLFormElement.prototype.submit.call(form);
+});
+
+renderAcomp();
+</script>
+</body>
+</html>
