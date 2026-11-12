@@ -202,8 +202,9 @@
     <section id="success" class="card p-8 text-center hidden">
       <div class="text-5xl mb-3">✅</div>
       <h2 class="text-2xl font-extrabold mb-2" data-i18n="okTitle">Cadastro recebido!</h2>
-      <p class="mb-6" style="color:var(--muted)" data-i18n="okText">Obrigado. O anfitrião vai conferir seus dados e enviar as instruções de acesso antes do check-in.</p>
-      <a id="waLink" href="#" target="_blank" rel="noopener" class="inline-block font-semibold px-6 py-3 rounded-xl text-white" style="background:#25D366" data-i18n="okWa">💬 Avisar o anfitrião no WhatsApp</a>
+      <p class="mb-6" style="color:var(--muted)" data-i18n="okText">Obrigado! Falta só um passo: enviar seus dados para o anfitrião pelo WhatsApp.</p>
+      <a id="waLink" href="#" class="inline-block font-semibold px-6 py-3 rounded-xl text-white" style="background:#25D366" data-i18n="okWa">💬 Enviar meus dados no WhatsApp</a>
+      <p id="waOpening" class="hidden text-sm mt-4" style="color:var(--muted)" data-i18n="okOpening"></p>
     </section>
   </main>
 
@@ -261,9 +262,12 @@ const I18N = {
     alertFix: 'Confira os campos destacados em vermelho.', alertWait: 'Aguarde o processamento das imagens.',
     submit: 'Enviar cadastro', sending: 'Enviando…',
     secure: '🔒 Os dados são enviados diretamente ao anfitrião e não ficam públicos.',
-    okTitle: 'Cadastro recebido!', okText: 'Obrigado. O anfitrião vai conferir seus dados e enviar as instruções de acesso antes do check-in.',
-    okWa: '💬 Avisar o anfitrião no WhatsApp',
-    waMsg: (n, d) => `Olá! Acabei de enviar meu cadastro de hóspede${n ? ' (' + n + ')' : ''}${d ? ' para o check-in em ' + d : ''}.`,
+    okTitle: 'Cadastro recebido!', okText: 'Obrigado! Falta só um passo: enviar seus dados para o anfitrião pelo WhatsApp.',
+    okWa: '💬 Enviar meus dados no WhatsApp',
+    okOpening: 'Abrindo o WhatsApp… Toque em <strong>enviar</strong> para mandar seus dados ao anfitrião.',
+    wa: { head: 'Olá! Segue meu cadastro de hóspede:', checkin: 'Check-in', checkout: 'Check-out', arrival: 'Chegada prevista', guests: 'Hóspedes',
+          name: 'Nome', doc: 'CPF/Passaporte', birth: 'Nascimento', phone: 'WhatsApp', comps: 'Acompanhantes', minor: 'menor', notes: 'Observações',
+          photo: '📎 Foto do documento enviada pelo formulário.' },
     footer: 'Este formulário não é afiliado ao Airbnb. Dúvidas? Fale com o anfitrião pela plataforma.',
     altFront: 'Pré-visualização da frente do documento', altBack: 'Pré-visualização do verso do documento'
   },
@@ -296,9 +300,12 @@ const I18N = {
     alertFix: 'Please check the fields highlighted in red.', alertWait: 'Please wait while the images are processed.',
     submit: 'Submit registration', sending: 'Sending…',
     secure: '🔒 Your data is sent directly to the host and is never made public.',
-    okTitle: 'Registration received!', okText: 'Thank you. The host will review your details and send you the access instructions before check-in.',
-    okWa: '💬 Let the host know on WhatsApp',
-    waMsg: (n, d) => `Hi! I have just submitted my guest registration${n ? ' (' + n + ')' : ''}${d ? ' for check-in on ' + d : ''}.`,
+    okTitle: 'Registration received!', okText: 'Thank you! Just one more step: send your details to the host on WhatsApp.',
+    okWa: '💬 Send my details on WhatsApp',
+    okOpening: 'Opening WhatsApp… Tap <strong>send</strong> to share your details with the host.',
+    wa: { head: 'Hi! Here is my guest registration:', checkin: 'Check-in', checkout: 'Check-out', arrival: 'Expected arrival', guests: 'Guests',
+          name: 'Name', doc: 'Passport/CPF', birth: 'Date of birth', phone: 'WhatsApp', comps: 'Other guests', minor: 'under 18', notes: 'Notes',
+          photo: '📎 ID photo sent through the form.' },
     footer: 'This form is not affiliated with Airbnb. Questions? Contact your host through the platform.',
     altFront: 'Preview of the front of the document', altBack: 'Preview of the back of the document'
   },
@@ -331,9 +338,12 @@ const I18N = {
     alertFix: 'Revisa los campos marcados en rojo.', alertWait: 'Espera a que se procesen las imágenes.',
     submit: 'Enviar registro', sending: 'Enviando…',
     secure: '🔒 Los datos se envían directamente al anfitrión y no se publican.',
-    okTitle: '¡Registro recibido!', okText: 'Gracias. El anfitrión revisará tus datos y te enviará las instrucciones de acceso antes del check-in.',
-    okWa: '💬 Avisar al anfitrión por WhatsApp',
-    waMsg: (n, d) => `¡Hola! Acabo de enviar mi registro de huésped${n ? ' (' + n + ')' : ''}${d ? ' para el check-in del ' + d : ''}.`,
+    okTitle: '¡Registro recibido!', okText: '¡Gracias! Solo falta un paso: enviar tus datos al anfitrión por WhatsApp.',
+    okWa: '💬 Enviar mis datos por WhatsApp',
+    okOpening: 'Abriendo WhatsApp… Toca <strong>enviar</strong> para mandar tus datos al anfitrión.',
+    wa: { head: '¡Hola! Este es mi registro de huésped:', checkin: 'Check-in', checkout: 'Check-out', arrival: 'Llegada estimada', guests: 'Huéspedes',
+          name: 'Nombre', doc: 'Pasaporte/CPF', birth: 'Nacimiento', phone: 'WhatsApp', comps: 'Acompañantes', minor: 'menor', notes: 'Observaciones',
+          photo: '📎 Foto del documento enviada por el formulario.' },
     footer: 'Este formulario no está afiliado a Airbnb. ¿Dudas? Habla con tu anfitrión por la plataforma.',
     altFront: 'Vista previa del frente del documento', altBack: 'Vista previa del dorso del documento'
   }
@@ -390,16 +400,38 @@ document.querySelectorAll('.langs button').forEach(b => b.addEventListener('clic
 const back = new URL(location.href); back.search = '?enviado=1'; back.hash = '';
 
 /* ---------- Tela de sucesso ---------- */
+// Monta a mensagem de WhatsApp com os dados salvos antes do envio
+function waText() {
+  let d = {};
+  try { d = JSON.parse(sessionStorage.getItem('hospede') || '{}'); } catch (e) {}
+  const w = T().wa, L = [w.head, ''];
+  const add = (k, v) => { if (v) L.push(`*${k}:* ${v}`); };
+  add(w.checkin, d.checkin); add(w.checkout, d.checkout); add(w.arrival, d.horario); add(w.guests, d.qtd);
+  L.push('');
+  add(w.name, d.nome); add(w.doc, d.doc); add(w.birth, d.nasc); add(w.phone, d.tel);
+  if (d.acomp && d.acomp.length) {
+    L.push('', `*${w.comps}:*`);
+    d.acomp.forEach((a, i) => L.push(`${i + 1}. ${a.nome}${a.doc ? ' — ' + a.doc : ''}${a.menor ? ' (' + w.minor + ')' : ''}`));
+  }
+  if (d.obs) { L.push(''); add(w.notes, d.obs); }
+  L.push('', w.photo);
+  return L.join('\n');
+}
 function updateWa() {
-  let nome = '', checkin = '';
-  try { const d = JSON.parse(sessionStorage.getItem('hospede') || '{}'); nome = d.nome || ''; checkin = d.checkin || ''; } catch (e) {}
-  $('#waLink').href = `https://wa.me/${CONFIG.HOST_WHATSAPP}?text=${encodeURIComponent(T().waMsg(nome, checkin))}`;
+  $('#waLink').href = `https://wa.me/${CONFIG.HOST_WHATSAPP}?text=${encodeURIComponent(waText())}`;
 }
 function showSuccess() {
   form.classList.add('hidden');
   $('#success').classList.remove('hidden');
   updateWa();
   window.scrollTo(0, 0);
+  // Abre o WhatsApp automaticamente uma única vez (se o hóspede voltar, fica só o botão)
+  let pending = false;
+  try { pending = sessionStorage.getItem('hospede_wa') === 'pendente'; sessionStorage.setItem('hospede_wa', 'aberto'); } catch (e) {}
+  if (pending) {
+    $('#waOpening').classList.remove('hidden');
+    setTimeout(() => { location.href = $('#waLink').href; }, 1200);
+  }
 }
 
 /* ---------- Máscaras ---------- */
@@ -600,7 +632,15 @@ form.addEventListener('submit', e => {
   back.search = `?enviado=1&lang=${lang}`;
   $('#fsNext').value = back.toString();
 
-  try { sessionStorage.setItem('hospede', JSON.stringify({ nome: $('#nome').value.trim(), checkin: fmtBR(ci.value) })); } catch (err) {}
+  try {
+    sessionStorage.setItem('hospede', JSON.stringify({
+      checkin: fmtBR(ci.value), checkout: fmtBR(co.value), horario: $('#horario').value, qtd: $('#qtd').value,
+      nome: $('#nome').value.trim(), doc: $('#cpf').value.trim(), nasc: fmtBR(nasc), tel: $('#tel').value.trim(),
+      acomp: [...document.querySelectorAll('#acompList > div')].map(c => ({ nome: $('.a-nome', c).value.trim(), doc: $('.a-doc', c).value.trim(), menor: $('.a-menor', c).checked })),
+      obs: $('#obs').value.trim()
+    }));
+    sessionStorage.setItem('hospede_wa', 'pendente');
+  } catch (err) {}
 
   const btn = $('#btnSubmit'); btn.disabled = true; btn.textContent = t.sending;
   HTMLFormElement.prototype.submit.call(form);
