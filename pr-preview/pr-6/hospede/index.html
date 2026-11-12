@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Hóspede</title>
+  <meta name="description" content="Cadastro de hóspede para check-in na hospedagem, com envio de documento de identidade." />
+  <!-- Página com dados pessoais: não indexar em buscadores -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FF5A5F" />
+  <link rel="icon" href="../favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand:#FF5A5F; --brand-dark:#E0484D; --ink:#222222; --muted:#6A6A6A; --line:#DDDDDD; --bg:#F7F7F7; }
+    body { font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+    .card { background:#fff; border:1px solid var(--line); border-radius:16px; }
+    .field label { display:block; font-size:.875rem; font-weight:600; margin-bottom:.35rem; }
+    .field input, .field select, .field textarea {
+      width:100%; border:1px solid #B0B0B0; border-radius:10px; padding:.75rem .9rem; font-size:1rem; background:#fff;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--ink); box-shadow:0 0 0 2px rgba(34,34,34,.12); }
+    .field input.invalid, .field select.invalid { border-color:#C13515; box-shadow:0 0 0 2px rgba(193,53,21,.12); }
+    .err { color:#C13515; font-size:.8rem; margin-top:.3rem; display:none; }
+    .err.show { display:block; }
+    .btn { background:linear-gradient(90deg,#E61E4D 0%,#E31C5F 50%,#D70466 100%); color:#fff; font-weight:700; border-radius:10px; padding:.95rem 1.5rem; }
+    .btn:disabled { opacity:.6; cursor:not-allowed; }
+    .drop { border:2px dashed #B0B0B0; border-radius:14px; cursor:pointer; transition:border-color .15s, background .15s; }
+    .drop:hover, .drop.drag { border-color:var(--ink); background:#FAFAFA; }
+    .drop.invalid { border-color:#C13515; }
+    .hidden, [hidden] { display:none !important; }
+    .step { width:28px; height:28px; border-radius:999px; background:var(--ink); color:#fff; font-size:.8rem; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex:none; }
+    .langs { display:flex; gap:4px; background:#F2F2F2; border-radius:999px; padding:3px; }
+    .langs button { font-size:.75rem; font-weight:700; padding:.35rem .6rem; border-radius:999px; color:var(--muted); line-height:1; }
+    .langs button[aria-pressed="true"] { background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.15); }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header class="bg-white border-b" style="border-color:var(--line)">
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FF5A5F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="flex-none"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
+      <div class="min-w-0">
+        <p class="font-extrabold text-lg leading-tight" data-i18n="title">Cadastro de Hóspede</p>
+        <p class="text-xs" style="color:var(--muted)" data-i18n="subtitle">Check-in seguro · leva cerca de 3 minutos</p>
+      </div>
+      <div class="langs ml-auto flex-none" role="group" aria-label="Idioma / Language / Idioma">
+        <button type="button" data-lang="pt" aria-pressed="true" title="Português">🇧🇷 PT</button>
+        <button type="button" data-lang="en" aria-pressed="false" title="English">🇺🇸 EN</button>
+        <button type="button" data-lang="es" aria-pressed="false" title="Español">🇪🇸 ES</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-8">
+
+    <section class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-extrabold mb-2" data-i18n="welcome">Bem-vindo(a)! 👋</h1>
+      <p style="color:var(--muted)" data-i18n="intro">Para liberar seu acesso à hospedagem e à portaria do condomínio, preencha os dados abaixo e envie uma foto do seu documento de identidade (RG ou CNH). Os dados são usados apenas para o seu check-in.</p>
+    </section>
+
+    <form id="guestForm" novalidate method="POST" enctype="multipart/form-data" class="space-y-6">
+      <!-- Campos de configuração do FormSubmit (preenchidos via JS) -->
+      <input type="hidden" name="_subject" id="fsSubject" value="Novo cadastro de hóspede">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" id="fsNext" value="">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      <input type="hidden" name="Idioma do hóspede" id="fsLang" value="Português">
+
+      <!-- 1. Reserva -->
+      <div class="card p-5 md:p-6">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-5"><span class="step">1</span> <span data-i18n="s1">Dados da reserva</span></h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="field">
+            <label for="checkin" data-i18n="checkin">Data de check-in *</label>
+            <input type="date" id="checkin" name="Check-in" required>
+            <p class="err" data-i18n="errCheckin">Informe a data de chegada.</p>
+          </div>
+          <div class="field">
+            <label for="checkout" data-i18n="checkout">Data de check-out *</label>
+            <input type="date" id="checkout" name="Check-out" required>
+            <p class="err" data-i18n="errCheckout">A saída deve ser depois da chegada.</p>
+          </div>
+          <div class="field">
+            <label for="horario" data-i18n="arrival">Horário previsto de chegada</label>
+            <input type="time" id="horario" name="Horário de chegada">
+          </div>
+          <div class="field">
+            <label for="qtd" data-i18n="guests">Total de hóspedes (incluindo você) *</label>
+            <select id="qtd" name="Total de hóspedes" required>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+              <option value="7">7</option><option value="8">8</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Hóspede responsável -->
+      <div class="card p-5 md:p-6">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-5"><span class="step">2</span> <span data-i18n="s2">Hóspede responsável</span></h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="field md:col-span-2">
+            <label for="nome" data-i18n="name">Nome completo *</label>
+            <input type="text" id="nome" name="Nome completo" required autocomplete="name" minlength="5">
+            <p class="err" data-i18n="errName">Informe nome e sobrenome.</p>
+          </div>
+          <div class="field">
+            <label for="cpf" data-i18n="cpf">CPF *</label>
+            <input type="text" id="cpf" name="CPF / Passaporte" required placeholder="000.000.000-00" maxlength="20" autocomplete="off">
+            <p class="err" data-i18n="errCpf">CPF inválido.</p>
+          </div>
+          <div class="field">
+            <label for="nasc" data-i18n="birth">Data de nascimento *</label>
+            <input type="date" id="nasc" name="Data de nascimento" required>
+            <p class="err" data-i18n="errBirth">O responsável deve ser maior de 18 anos.</p>
+          </div>
+          <div class="field">
+            <label for="tel" data-i18n="phone">WhatsApp / celular *</label>
+            <input type="tel" id="tel" name="Telefone" required autocomplete="tel" placeholder="(81) 90000-0000" maxlength="20">
+            <p class="err" data-i18n="errPhone">Informe um telefone com DDD.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Documento -->
+      <div class="card p-5 md:p-6">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-2"><span class="step">3</span> <span data-i18n="s3">Foto do documento</span></h2>
+        <p class="text-sm mb-5" style="color:var(--muted)" data-i18n="docHelp">Envie uma foto nítida do RG ou CNH, sem reflexos e com todos os dados legíveis. JPG, PNG ou PDF. Imagens grandes são reduzidas automaticamente antes do envio.</p>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm font-semibold mb-2" data-i18n="front">Frente *</p>
+            <label class="drop flex flex-col items-center justify-center text-center p-4 min-h-[180px]" id="dropFrente">
+              <input type="file" id="docFrente" name="attachment" accept="image/*,application/pdf" class="hidden">
+              <div class="placeholder">
+                <div class="text-3xl mb-1">🪪</div>
+                <p class="font-semibold text-sm" data-i18n="pick">Tirar foto ou escolher arquivo</p>
+                <p class="text-xs" style="color:var(--muted)" data-i18n="frontHint">Frente do documento</p>
+              </div>
+              <img class="preview hidden max-h-40 rounded-lg" alt="">
+              <p class="filename hidden text-xs mt-2 break-all"></p>
+            </label>
+            <p class="err" id="errFrente"></p>
+          </div>
+          <div>
+            <p class="text-sm font-semibold mb-2" data-i18n="back">Verso <span class="font-normal" style="color:var(--muted)">(se for RG)</span></p>
+            <label class="drop flex flex-col items-center justify-center text-center p-4 min-h-[180px]" id="dropVerso">
+              <input type="file" id="docVerso" name="attachment2" accept="image/*,application/pdf" class="hidden">
+              <div class="placeholder">
+                <div class="text-3xl mb-1">🔄</div>
+                <p class="font-semibold text-sm" data-i18n="pick">Tirar foto ou escolher arquivo</p>
+                <p class="text-xs" style="color:var(--muted)" data-i18n="backHint">Verso do documento</p>
+              </div>
+              <img class="preview hidden max-h-40 rounded-lg" alt="">
+              <p class="filename hidden text-xs mt-2 break-all"></p>
+            </label>
+            <p class="err" id="errVerso"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Acompanhantes -->
+      <div class="card p-5 md:p-6" id="cardAcomp" hidden>
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-2"><span class="step">4</span> <span data-i18n="s4">Acompanhantes</span></h2>
+        <p class="text-sm mb-5" style="color:var(--muted)" data-i18n="compHelp">Informe nome e documento de cada pessoa que vai se hospedar com você (exigência da portaria).</p>
+        <div id="acompList" class="space-y-4"></div>
+        <input type="hidden" name="Acompanhantes" id="acompResumo">
+      </div>
+
+      <!-- 5. Observações -->
+      <div class="card p-5 md:p-6">
+        <h2 class="flex items-center gap-3 text-lg font-bold mb-5"><span class="step" id="stepExtra">4</span> <span data-i18n="s5">Observações</span></h2>
+        <div class="grid gap-4">
+          <div class="field">
+            <label for="obs" data-i18n="notes">Algo que o anfitrião precise saber? <span class="font-normal" style="color:var(--muted)">(opcional)</span></label>
+            <textarea id="obs" name="Observações" rows="3" placeholder="Pets, berço, necessidades especiais..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consentimento LGPD -->
+      <div class="card p-5 md:p-6">
+        <label class="flex items-start gap-3 text-sm cursor-pointer">
+          <input type="checkbox" id="lgpd" name="Consentimento LGPD" value="Sim" class="mt-1 h-5 w-5 flex-none accent-black">
+          <span data-i18n="consent">Declaro que as informações são verdadeiras e autorizo o uso dos meus dados e da imagem do meu documento <strong>exclusivamente</strong> para identificação no check-in e cadastro na portaria do condomínio, conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018). Os dados serão excluídos após o término da estadia.</span>
+        </label>
+        <p class="err" id="errLgpd" data-i18n="errConsent">É necessário aceitar para continuar.</p>
+      </div>
+
+      <div id="formAlert" class="hidden rounded-xl p-4 text-sm font-medium" style="background:#FFF1F0;color:#C13515"></div>
+
+      <button type="submit" id="btnSubmit" class="btn w-full text-lg shadow-sm" data-i18n="submit">Enviar cadastro</button>
+      <p class="text-xs text-center" style="color:var(--muted)" data-i18n="secure">🔒 Os dados são enviados diretamente ao anfitrião e não ficam públicos.</p>
+    </form>
+
+    <!-- Tela de sucesso -->
+    <section id="success" class="card p-8 text-center hidden">
+      <div class="text-5xl mb-3">✅</div>
+      <h2 class="text-2xl font-extrabold mb-2" data-i18n="okTitle">Cadastro recebido!</h2>
+      <p class="mb-6" style="color:var(--muted)" data-i18n="okText">Obrigado! Falta só um passo: enviar seus dados para o anfitrião pelo WhatsApp.</p>
+      <a id="waLink" href="#" class="inline-block font-semibold px-6 py-3 rounded-xl text-white" style="background:#25D366" data-i18n="okWa">💬 Enviar meus dados no WhatsApp</a>
+      <p id="waOpening" class="hidden text-sm mt-4" style="color:var(--muted)" data-i18n="okOpening"></p>
+    </section>
+  </main>
+
+  <footer class="text-center text-xs py-8 px-4" style="color:var(--muted)" data-i18n="footer">
+    Este formulário não é afiliado ao Airbnb. Dúvidas? Fale com o anfitrião pela plataforma.
+  </footer>
+
+<script>
+/* =========================================================================
+   CONFIGURAÇÃO — altere aqui
+   -------------------------------------------------------------------------
+   HOST_EMAIL : e-mail que vai receber os cadastros (com o RG em anexo).
+                No 1º envio, o FormSubmit manda um e-mail de ATIVAÇÃO para
+                esse endereço — é preciso clicar em "Activate" uma única vez.
+   HOST_WHATSAPP : número do anfitrião (DDI+DDD+número, só dígitos).
+   ========================================================================= */
+const CONFIG = {
+  HOST_EMAIL: 'dpaula.escritorioadv@gmail.com',
+  HOST_WHATSAPP: '5581979029041',
+  MAX_IMG_SIDE: 1800,          // px — reduz fotos grandes de celular
+  MAX_FILE_MB: 4.5             // limite por arquivo depois da compressão
+};
+
+/* =========================================================================
+   TRADUÇÕES (pt / en / es)
+   Os nomes dos campos no e-mail que você recebe continuam em português.
+   ========================================================================= */
+const I18N = {
+  pt: {
+    htmlLang: 'pt-BR', langName: 'Português',
+    title: 'Cadastro de Hóspede',
+    subtitle: 'Check-in seguro · leva cerca de 3 minutos',
+    welcome: 'Bem-vindo(a)! 👋',
+    intro: 'Para liberar seu acesso à hospedagem e à portaria do condomínio, preencha os dados abaixo e envie uma foto do seu documento de identidade (RG ou CNH). Os dados são usados apenas para o seu check-in.',
+    s1: 'Dados da reserva', checkin: 'Data de check-in *', checkout: 'Data de check-out *',
+    errCheckin: 'Informe a data de chegada.', errCheckout: 'A saída deve ser depois da chegada.',
+    arrival: 'Horário previsto de chegada', guests: 'Total de hóspedes (incluindo você) *',
+    s2: 'Hóspede responsável', name: 'Nome completo *', errName: 'Informe nome e sobrenome.',
+    cpf: 'CPF <span class="font-normal" style="color:var(--muted)">(estrangeiros: nº do passaporte)</span> *',
+    cpfPh: '000.000.000-00', errCpf: 'Informe um CPF válido ou o número do passaporte.',
+    birth: 'Data de nascimento *', errBirth: 'O responsável deve ser maior de 18 anos.',
+    phone: 'WhatsApp / celular *', phonePh: '(81) 90000-0000', errPhone: 'Informe um telefone com DDD.',
+    s3: 'Foto do documento',
+    docHelp: 'Envie uma foto nítida do RG, CNH ou passaporte, sem reflexos e com todos os dados legíveis. JPG, PNG ou PDF. Imagens grandes são reduzidas automaticamente antes do envio.',
+    front: 'Frente *', back: 'Verso <span class="font-normal" style="color:var(--muted)">(se for RG)</span>',
+    pick: 'Tirar foto ou escolher arquivo', frontHint: 'Frente do documento', backHint: 'Verso do documento',
+    errFront: 'Envie a foto da frente do documento.', errFormat: 'Formato não aceito. Use JPG, PNG ou PDF.',
+    errSize: n => `Arquivo muito grande (máx. ${n} MB).`, processing: 'Processando…',
+    s4: 'Acompanhantes', compHelp: 'Informe nome e documento de cada pessoa que vai se hospedar com você (exigência da portaria).',
+    compName: i => `Acompanhante ${i} — nome completo *`, compDoc: 'RG, CPF ou passaporte', compMinor: 'Menor de idade', errCompName: 'Informe o nome.',
+    s5: 'Observações', notes: 'Algo que o anfitrião precise saber? <span class="font-normal" style="color:var(--muted)">(opcional)</span>',
+    notesPh: 'Pets, berço, necessidades especiais...',
+    consent: 'Declaro que as informações são verdadeiras e autorizo o uso dos meus dados e da imagem do meu documento <strong>exclusivamente</strong> para identificação no check-in e cadastro na portaria do condomínio, conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018). Os dados serão excluídos após o término da estadia.',
+    errConsent: 'É necessário aceitar para continuar.',
+    alertFix: 'Confira os campos destacados em vermelho.', alertWait: 'Aguarde o processamento das imagens.',
+    submit: 'Enviar cadastro', sending: 'Enviando…',
+    secure: '🔒 Os dados são enviados diretamente ao anfitrião e não ficam públicos.',
+    okTitle: 'Cadastro recebido!', okText: 'Obrigado! Falta só um passo: enviar seus dados para o anfitrião pelo WhatsApp.',
+    okWa: '💬 Enviar meus dados no WhatsApp',
+    okOpening: 'Abrindo o WhatsApp… Toque em <strong>enviar</strong> para mandar seus dados ao anfitrião.',
+    wa: { head: 'Olá! Segue meu cadastro de hóspede:', checkin: 'Check-in', checkout: 'Check-out', arrival: 'Chegada prevista', guests: 'Hóspedes',
+          name: 'Nome', doc: 'CPF/Passaporte', birth: 'Nascimento', phone: 'WhatsApp', comps: 'Acompanhantes', minor: 'menor', notes: 'Observações',
+          photo: '📎 Foto do documento enviada pelo formulário.' },
+    footer: 'Este formulário não é afiliado ao Airbnb. Dúvidas? Fale com o anfitrião pela plataforma.',
+    altFront: 'Pré-visualização da frente do documento', altBack: 'Pré-visualização do verso do documento'
+  },
+  en: {
+    htmlLang: 'en', langName: 'Inglês',
+    title: 'Guest Registration',
+    subtitle: 'Secure check-in · takes about 3 minutes',
+    welcome: 'Welcome! 👋',
+    intro: 'To grant you access to the property and the building’s front desk, please fill in the details below and upload a photo of your ID document (ID card, driver’s license or passport). Your data is used only for your check-in.',
+    s1: 'Booking details', checkin: 'Check-in date *', checkout: 'Check-out date *',
+    errCheckin: 'Please enter your arrival date.', errCheckout: 'Check-out must be after check-in.',
+    arrival: 'Expected arrival time', guests: 'Total guests (including you) *',
+    s2: 'Main guest', name: 'Full name *', errName: 'Please enter your first and last name.',
+    cpf: 'Passport number <span class="font-normal" style="color:var(--muted)">(or CPF, if Brazilian)</span> *',
+    cpfPh: 'e.g. X1234567', errCpf: 'Please enter a valid passport number or CPF.',
+    birth: 'Date of birth *', errBirth: 'The main guest must be 18 or older.',
+    phone: 'WhatsApp / mobile (with country code) *', phonePh: '+1 555 123 4567', errPhone: 'Please enter a phone number with country code.',
+    s3: 'ID document photo',
+    docHelp: 'Upload a clear photo of your passport or ID, with no glare and all details readable. JPG, PNG or PDF. Large images are resized automatically before sending.',
+    front: 'Front / photo page *', back: 'Back <span class="font-normal" style="color:var(--muted)">(if ID card)</span>',
+    pick: 'Take a photo or choose a file', frontHint: 'Front of the document', backHint: 'Back of the document',
+    errFront: 'Please upload a photo of the front of your document.', errFormat: 'Unsupported format. Use JPG, PNG or PDF.',
+    errSize: n => `File too large (max. ${n} MB).`, processing: 'Processing…',
+    s4: 'Other guests', compHelp: 'Enter the name and document of each person staying with you (required by the building).',
+    compName: i => `Guest ${i + 1} — full name *`, compDoc: 'Passport or ID number', compMinor: 'Under 18', errCompName: 'Please enter the name.',
+    s5: 'Notes', notes: 'Anything the host should know? <span class="font-normal" style="color:var(--muted)">(optional)</span>',
+    notesPh: 'Pets, crib, special needs...',
+    consent: 'I declare that the information provided is true and I authorize the use of my data and the image of my document <strong>exclusively</strong> for identification at check-in and registration with the building’s front desk, in accordance with the Brazilian General Data Protection Law (Law 13.709/2018). The data will be deleted after the end of the stay.',
+    errConsent: 'You must accept to continue.',
+    alertFix: 'Please check the fields highlighted in red.', alertWait: 'Please wait while the images are processed.',
+    submit: 'Submit registration', sending: 'Sending…',
+    secure: '🔒 Your data is sent directly to the host and is never made public.',
+    okTitle: 'Registration received!', okText: 'Thank you! Just one more step: send your details to the host on WhatsApp.',
+    okWa: '💬 Send my details on WhatsApp',
+    okOpening: 'Opening WhatsApp… Tap <strong>send</strong> to share your details with the host.',
+    wa: { head: 'Hi! Here is my guest registration:', checkin: 'Check-in', checkout: 'Check-out', arrival: 'Expected arrival', guests: 'Guests',
+          name: 'Name', doc: 'Passport/CPF', birth: 'Date of birth', phone: 'WhatsApp', comps: 'Other guests', minor: 'under 18', notes: 'Notes',
+          photo: '📎 ID photo sent through the form.' },
+    footer: 'This form is not affiliated with Airbnb. Questions? Contact your host through the platform.',
+    altFront: 'Preview of the front of the document', altBack: 'Preview of the back of the document'
+  },
+  es: {
+    htmlLang: 'es', langName: 'Espanhol',
+    title: 'Registro de Huésped',
+    subtitle: 'Check-in seguro · toma unos 3 minutos',
+    welcome: '¡Bienvenido(a)! 👋',
+    intro: 'Para habilitar tu acceso al alojamiento y a la portería del edificio, completa los datos a continuación y envía una foto de tu documento de identidad (DNI, cédula, licencia de conducir o pasaporte). Los datos se usan solo para tu check-in.',
+    s1: 'Datos de la reserva', checkin: 'Fecha de check-in *', checkout: 'Fecha de check-out *',
+    errCheckin: 'Indica la fecha de llegada.', errCheckout: 'La salida debe ser posterior a la llegada.',
+    arrival: 'Hora estimada de llegada', guests: 'Total de huéspedes (incluyéndote) *',
+    s2: 'Huésped responsable', name: 'Nombre completo *', errName: 'Indica nombre y apellido.',
+    cpf: 'Número de pasaporte o documento <span class="font-normal" style="color:var(--muted)">(o CPF, si eres brasileño)</span> *',
+    cpfPh: 'ej.: AB123456', errCpf: 'Indica un número de pasaporte/documento o CPF válido.',
+    birth: 'Fecha de nacimiento *', errBirth: 'El huésped responsable debe ser mayor de 18 años.',
+    phone: 'WhatsApp / celular (con código de país) *', phonePh: '+54 9 11 1234 5678', errPhone: 'Indica un teléfono con código de país.',
+    s3: 'Foto del documento',
+    docHelp: 'Envía una foto nítida de tu pasaporte, DNI o cédula, sin reflejos y con todos los datos legibles. JPG, PNG o PDF. Las imágenes grandes se reducen automáticamente antes del envío.',
+    front: 'Frente *', back: 'Dorso <span class="font-normal" style="color:var(--muted)">(si es DNI/cédula)</span>',
+    pick: 'Tomar foto o elegir archivo', frontHint: 'Frente del documento', backHint: 'Dorso del documento',
+    errFront: 'Envía la foto del frente del documento.', errFormat: 'Formato no admitido. Usa JPG, PNG o PDF.',
+    errSize: n => `Archivo demasiado grande (máx. ${n} MB).`, processing: 'Procesando…',
+    s4: 'Acompañantes', compHelp: 'Indica nombre y documento de cada persona que se hospedará contigo (requisito de la portería).',
+    compName: i => `Acompañante ${i} — nombre completo *`, compDoc: 'Pasaporte o documento', compMinor: 'Menor de edad', errCompName: 'Indica el nombre.',
+    s5: 'Observaciones', notes: '¿Algo que el anfitrión deba saber? <span class="font-normal" style="color:var(--muted)">(opcional)</span>',
+    notesPh: 'Mascotas, cuna, necesidades especiales...',
+    consent: 'Declaro que la información es verdadera y autorizo el uso de mis datos y de la imagen de mi documento <strong>exclusivamente</strong> para la identificación en el check-in y el registro en la portería del edificio, conforme a la Ley General de Protección de Datos de Brasil (Ley 13.709/2018). Los datos serán eliminados al finalizar la estadía.',
+    errConsent: 'Debes aceptar para continuar.',
+    alertFix: 'Revisa los campos marcados en rojo.', alertWait: 'Espera a que se procesen las imágenes.',
+    submit: 'Enviar registro', sending: 'Enviando…',
+    secure: '🔒 Los datos se envían directamente al anfitrión y no se publican.',
+    okTitle: '¡Registro recibido!', okText: '¡Gracias! Solo falta un paso: enviar tus datos al anfitrión por WhatsApp.',
+    okWa: '💬 Enviar mis datos por WhatsApp',
+    okOpening: 'Abriendo WhatsApp… Toca <strong>enviar</strong> para mandar tus datos al anfitrión.',
+    wa: { head: '¡Hola! Este es mi registro de huésped:', checkin: 'Check-in', checkout: 'Check-out', arrival: 'Llegada estimada', guests: 'Huéspedes',
+          name: 'Nombre', doc: 'Pasaporte/CPF', birth: 'Nacimiento', phone: 'WhatsApp', comps: 'Acompañantes', minor: 'menor', notes: 'Observaciones',
+          photo: '📎 Foto del documento enviada por el formulario.' },
+    footer: 'Este formulario no está afiliado a Airbnb. ¿Dudas? Habla con tu anfitrión por la plataforma.',
+    altFront: 'Vista previa del frente del documento', altBack: 'Vista previa del dorso del documento'
+  }
+};
+
+const $ = (s, el = document) => el.querySelector(s);
+const form = $('#guestForm');
+form.action = 'https://formsubmit.co/' + CONFIG.HOST_EMAIL;
+
+/* ---------- Idioma ---------- */
+const store = {
+  get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }
+};
+function detectLang() {
+  const q = (new URLSearchParams(location.search).get('lang') || '').slice(0, 2).toLowerCase();
+  if (I18N[q]) return q;
+  const saved = store.get('hospede_lang');
+  if (I18N[saved]) return saved;
+  const nav = (navigator.languages || [navigator.language || 'pt']).map(l => l.slice(0, 2).toLowerCase());
+  return nav.find(l => I18N[l]) || 'pt';
+}
+let lang = detectLang();
+const T = () => I18N[lang];
+
+function applyLang(l, save) {
+  lang = l;
+  if (save) store.set('hospede_lang', l);
+  const t = T();
+  document.documentElement.lang = t.htmlLang;
+  document.title = t.title;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = t[el.dataset.i18n];
+    if (typeof v === 'string') el.innerHTML = v;
+  });
+  document.querySelectorAll('.langs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === l)));
+  $('#cpf').placeholder = t.cpfPh;
+  $('#tel').placeholder = t.phonePh;
+  $('#obs').placeholder = t.notesPh;
+  $('#dropFrente .preview').alt = t.altFront;
+  $('#dropVerso .preview').alt = t.altBack;
+  $('#cpf').inputMode = l === 'pt' ? 'numeric' : 'text';
+  $('#fsLang').value = t.langName;
+  // Mensagens de erro já exibidas e textos dinâmicos
+  if ($('#errFrente').classList.contains('show')) $('#errFrente').textContent = t.errFront;
+  const alertBox = $('#formAlert');
+  if (!alertBox.classList.contains('hidden')) alertBox.textContent = t.alertFix;
+  renderAcomp();
+  if (!$('#success').classList.contains('hidden')) updateWa();
+}
+document.querySelectorAll('.langs button').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.lang, true)));
+
+// Após o envio, o FormSubmit redireciona de volta para esta página com ?enviado=1
+const back = new URL(location.href); back.search = '?enviado=1'; back.hash = '';
+
+/* ---------- Tela de sucesso ---------- */
+// Monta a mensagem de WhatsApp com os dados salvos antes do envio
+function waText() {
+  let d = {};
+  try { d = JSON.parse(sessionStorage.getItem('hospede') || '{}'); } catch (e) {}
+  const w = T().wa, L = [w.head, ''];
+  const add = (k, v) => { if (v) L.push(`*${k}:* ${v}`); };
+  add(w.checkin, d.checkin); add(w.checkout, d.checkout); add(w.arrival, d.horario); add(w.guests, d.qtd);
+  L.push('');
+  add(w.name, d.nome); add(w.doc, d.doc); add(w.birth, d.nasc); add(w.phone, d.tel);
+  if (d.acomp && d.acomp.length) {
+    L.push('', `*${w.comps}:*`);
+    d.acomp.forEach((a, i) => L.push(`${i + 1}. ${a.nome}${a.doc ? ' — ' + a.doc : ''}${a.menor ? ' (' + w.minor + ')' : ''}`));
+  }
+  if (d.obs) { L.push(''); add(w.notes, d.obs); }
+  L.push('', w.photo);
+  return L.join('\n');
+}
+function updateWa() {
+  $('#waLink').href = `https://wa.me/${CONFIG.HOST_WHATSAPP}?text=${encodeURIComponent(waText())}`;
+}
+function showSuccess() {
+  form.classList.add('hidden');
+  $('#success').classList.remove('hidden');
+  updateWa();
+  window.scrollTo(0, 0);
+  // Abre o WhatsApp automaticamente uma única vez (se o hóspede voltar, fica só o botão)
+  let pending = false;
+  try { pending = sessionStorage.getItem('hospede_wa') === 'pendente'; sessionStorage.setItem('hospede_wa', 'aberto'); } catch (e) {}
+  if (pending) {
+    $('#waOpening').classList.remove('hidden');
+    setTimeout(() => { location.href = $('#waLink').href; }, 1200);
+  }
+}
+
+/* ---------- Máscaras ---------- */
+const onlyDigits = v => v.replace(/\D/g, '');
+$('#cpf').addEventListener('input', e => {
+  const raw = e.target.value;
+  // Só aplica a máscara de CPF quando forem apenas números (passaportes têm letras)
+  if (/[a-z]/i.test(raw)) { e.target.value = raw.toUpperCase().replace(/[^A-Z0-9-]/g, ''); return; }
+  let v = onlyDigits(raw).slice(0, 11);
+  v = v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  e.target.value = v;
+});
+$('#tel').addEventListener('input', e => {
+  const raw = e.target.value;
+  if (raw.trim().startsWith('+')) { e.target.value = '+' + raw.replace(/[^\d ]/g, '').replace(/^ +/, ''); return; } // internacional
+  let v = onlyDigits(raw).slice(0, 11);
+  if (v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+  else if (v.length > 6) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+  else if (v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+  e.target.value = v;
+});
+
+function cpfValido(cpf) {
+  cpf = onlyDigits(cpf);
+  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+  for (let t = 9; t < 11; t++) {
+    let s = 0;
+    for (let i = 0; i < t; i++) s += +cpf[i] * (t + 1 - i);
+    if (((10 * s) % 11) % 10 !== +cpf[t]) return false;
+  }
+  return true;
+}
+// CPF válido, ou documento estrangeiro (passaporte: letras e números, 5 a 20 caracteres)
+function docValido(v) {
+  v = v.trim();
+  if (/^[\d.\-\s]+$/.test(v) && onlyDigits(v).length === 11) return cpfValido(v);
+  if (/[a-z]/i.test(v)) return /^[A-Z0-9-]{5,20}$/i.test(v);
+  return lang !== 'pt' && onlyDigits(v).length >= 5; // estrangeiro com documento só numérico
+}
+function telValido(v) {
+  const d = onlyDigits(v);
+  return v.trim().startsWith('+') ? d.length >= 8 && d.length <= 15 : d.length >= 10;
+}
+
+/* ---------- Datas ---------- */
+const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+const iso = d => d.toISOString().slice(0, 10);
+$('#checkin').min = iso(new Date(hoje.getTime() - 86400000));
+$('#checkin').addEventListener('change', e => { $('#checkout').min = e.target.value; });
+const fmtBR = v => v ? v.split('-').reverse().join('/') : '';
+
+/* ---------- Acompanhantes dinâmicos ---------- */
+function renderAcomp() {
+  const t = T();
+  const n = +$('#qtd').value - 1;
+  const list = $('#acompList');
+  const atuais = [...list.children].map(c => ({
+    nome: $('.a-nome', c).value, doc: $('.a-doc', c).value, menor: $('.a-menor', c).checked,
+    invalid: $('.a-nome', c).classList.contains('invalid')
+  }));
+  list.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const d = atuais[i] || {};
+    const div = document.createElement('div');
+    div.className = 'grid md:grid-cols-[1fr_200px] gap-3 items-start pb-4 border-b last:border-0';
+    div.style.borderColor = 'var(--line)';
+    div.innerHTML = `
+      <div class="field"><label></label><input type="text" class="a-nome" required><p class="err"></p></div>
+      <div class="field"><label></label><input type="text" class="a-doc" maxlength="20"></div>
+      <label class="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" class="a-menor h-4 w-4 accent-black"> <span></span></label>`;
+    const [lblNome, lblDoc] = div.querySelectorAll('.field label');
+    lblNome.textContent = t.compName(i + 1);
+    lblDoc.textContent = t.compDoc;
+    $('.err', div).textContent = t.errCompName;
+    $('label > span', div).textContent = t.compMinor;
+    $('.a-nome', div).value = d.nome || '';
+    $('.a-doc', div).value = d.doc || '';
+    $('.a-menor', div).checked = !!d.menor;
+    if (d.invalid) { $('.a-nome', div).classList.add('invalid'); $('.err', div).classList.add('show'); }
+    list.appendChild(div);
+  }
+  $('#cardAcomp').hidden = n < 1;
+  $('#stepExtra').textContent = n < 1 ? '4' : '5';
+}
+$('#qtd').addEventListener('change', renderAcomp);
+
+/* ---------- Upload + compressão de imagem ---------- */
+async function compress(file) {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
+  try {
+    const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    const scale = Math.min(1, CONFIG.MAX_IMG_SIDE / Math.max(bmp.width, bmp.height));
+    if (scale === 1 && file.size < 1.5 * 1024 * 1024) return file;
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.85));
+    if (!blob) return file;
+    return new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' });
+  } catch (e) { return file; } // ex.: HEIC em navegador sem suporte — envia original
+}
+
+function setupDrop(dropId, inputId, errId) {
+  const drop = $('#' + dropId), input = $('#' + inputId), err = $('#' + errId);
+  const prev = $('.preview', drop), ph = $('.placeholder', drop), fn = $('.filename', drop);
+  let busy = false;
+
+  async function handle(file) {
+    err.classList.remove('show'); drop.classList.remove('invalid');
+    if (!file) return;
+    if (!/^image\/|application\/pdf/.test(file.type) && !/\.(heic|heif)$/i.test(file.name)) {
+      err.textContent = T().errFormat; err.classList.add('show'); input.value = ''; return;
+    }
+    busy = true; fn.textContent = T().processing; fn.classList.remove('hidden');
+    const out = await compress(file);
+    busy = false;
+    if (out.size > CONFIG.MAX_FILE_MB * 1024 * 1024) {
+      err.textContent = T().errSize(CONFIG.MAX_FILE_MB); err.classList.add('show');
+      input.value = ''; fn.classList.add('hidden'); prev.classList.add('hidden'); ph.classList.remove('hidden'); return;
+    }
+    const dt = new DataTransfer(); dt.items.add(out); input.files = dt.files;
+    fn.textContent = `${out.name} · ${(out.size / 1024).toFixed(0)} KB`;
+    if (out.type.startsWith('image/')) {
+      prev.src = URL.createObjectURL(out); prev.classList.remove('hidden'); ph.classList.add('hidden');
+    } else { prev.classList.add('hidden'); ph.classList.remove('hidden'); $('div', ph).textContent = '📄'; }
+  }
+  input.addEventListener('change', () => handle(input.files[0]));
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('drag'); }));
+  drop.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handle(e.dataTransfer.files[0]); });
+  return { isBusy: () => busy, input, drop, err };
+}
+const frente = setupDrop('dropFrente', 'docFrente', 'errFrente');
+const verso = setupDrop('dropVerso', 'docVerso', 'errVerso');
+
+/* ---------- Limpa o erro assim que o campo é corrigido ---------- */
+form.addEventListener('input', e => {
+  const el = e.target;
+  if (el.classList.contains('invalid')) { el.classList.remove('invalid'); el.closest('.field')?.querySelector('.err')?.classList.remove('show'); }
+  if (el.id === 'lgpd') $('#errLgpd').classList.remove('show');
+  if (!form.querySelector('.invalid, .err.show')) $('#formAlert').classList.add('hidden');
+});
+
+/* ---------- Validação e envio ---------- */
+function mark(el, ok) {
+  el.classList.toggle('invalid', !ok);
+  const e = el.closest('.field')?.querySelector('.err');
+  if (e) e.classList.toggle('show', !ok);
+  return ok;
+}
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const t = T();
+  const alertBox = $('#formAlert'); alertBox.classList.add('hidden');
+  if (frente.isBusy() || verso.isBusy()) { alertBox.textContent = t.alertWait; alertBox.classList.remove('hidden'); return; }
+
+  const checks = [];
+  const ci = $('#checkin'), co = $('#checkout');
+  checks.push(mark(ci, !!ci.value));
+  checks.push(mark(co, !!co.value && (!ci.value || co.value > ci.value)));
+  checks.push(mark($('#nome'), $('#nome').value.trim().split(/\s+/).length >= 2));
+  checks.push(mark($('#cpf'), docValido($('#cpf').value)));
+  const nasc = $('#nasc').value;
+  let maior = false;
+  if (nasc) { const d = new Date(nasc + 'T00:00'); d.setFullYear(d.getFullYear() + 18); maior = d <= new Date(); }
+  checks.push(mark($('#nasc'), maior));
+  checks.push(mark($('#tel'), telValido($('#tel').value)));
+  document.querySelectorAll('.a-nome').forEach(i => checks.push(mark(i, i.value.trim().length >= 3)));
+
+  const temFrente = frente.input.files.length > 0;
+  frente.drop.classList.toggle('invalid', !temFrente);
+  if (!temFrente) { frente.err.textContent = t.errFront; frente.err.classList.add('show'); }
+  checks.push(temFrente);
+
+  const lgpd = $('#lgpd').checked;
+  $('#errLgpd').classList.toggle('show', !lgpd);
+  checks.push(lgpd);
+
+  if (checks.includes(false)) {
+    alertBox.textContent = t.alertFix;
+    alertBox.classList.remove('hidden');
+    const first = form.querySelector('.invalid, .err.show');
+    first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Resumo dos acompanhantes em um único campo (sempre em português no e-mail)
+  const acomp = [...document.querySelectorAll('#acompList > div')].map((c, i) =>
+    `${i + 1}) ${$('.a-nome', c).value.trim()}${$('.a-doc', c).value.trim() ? ' — Doc: ' + $('.a-doc', c).value.trim() : ''}${$('.a-menor', c).checked ? ' (menor)' : ''}`
+  ).join(' | ');
+  $('#acompResumo').value = acomp || 'Nenhum';
+  if (!verso.input.files.length) verso.input.disabled = true; // não envia campo de arquivo vazio
+
+  const flag = { pt: '', en: ' [EN]', es: ' [ES]' }[lang];
+  $('#fsSubject').value = `Cadastro de hóspede${flag}: ${$('#nome').value.trim()} — check-in ${fmtBR(ci.value)}`;
+  // Volta para a página no mesmo idioma
+  back.search = `?enviado=1&lang=${lang}`;
+  $('#fsNext').value = back.toString();
+
+  try {
+    sessionStorage.setItem('hospede', JSON.stringify({
+      checkin: fmtBR(ci.value), checkout: fmtBR(co.value), horario: $('#horario').value, qtd: $('#qtd').value,
+      nome: $('#nome').value.trim(), doc: $('#cpf').value.trim(), nasc: fmtBR(nasc), tel: $('#tel').value.trim(),
+      acomp: [...document.querySelectorAll('#acompList > div')].map(c => ({ nome: $('.a-nome', c).value.trim(), doc: $('.a-doc', c).value.trim(), menor: $('.a-menor', c).checked })),
+      obs: $('#obs').value.trim()
+    }));
+    sessionStorage.setItem('hospede_wa', 'pendente');
+  } catch (err) {}
+
+  const btn = $('#btnSubmit'); btn.disabled = true; btn.textContent = t.sending;
+  HTMLFormElement.prototype.submit.call(form);
+});
+
+applyLang(lang, false);
+if (new URLSearchParams(location.search).get('enviado') === '1') showSuccess();
+</script>
+</body>
+</html>
