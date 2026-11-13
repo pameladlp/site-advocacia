@@ -233,6 +233,10 @@
    HOST_WHATSAPP : número do anfitrião (DDI+DDD+número, só dígitos).
    ========================================================================= */
 const CONFIG = {
+  // Link do App da Web do Google Apps Script (hospede/apps-script/Codigo.gs).
+  // Preenchido: os cadastros vão para o e-mail, o Drive e a planilha pelo Google.
+  // Vazio: usa o FormSubmit (HOST_EMAIL) como alternativa.
+  SCRIPT_URL: '',
   HOST_EMAIL: 'pameladlp@gmail.com',
   HOST_WHATSAPP: '5581995868809',
   MAX_IMG_SIDE: 1800,          // px — reduz fotos grandes de celular
@@ -270,6 +274,7 @@ const I18N = {
     notesPh: 'Pets, berço, necessidades especiais...',
     consent: 'Declaro que as informações são verdadeiras e autorizo o uso dos meus dados e da imagem do meu documento <strong>exclusivamente</strong> para identificação no check-in e cadastro na portaria do condomínio, conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018). Os dados serão excluídos após o término da estadia.',
     errConsent: 'É necessário aceitar para continuar.',
+    errSend: 'Não foi possível enviar agora. Verifique sua internet e tente de novo, ou fale com o anfitrião pelo WhatsApp.',
     alertFix: 'Confira os campos destacados em vermelho.', alertWait: 'Aguarde o processamento das imagens.',
     submit: 'Enviar cadastro', sending: 'Enviando…',
     secure: '🔒 Os dados são enviados diretamente ao anfitrião e não ficam públicos.',
@@ -309,6 +314,7 @@ const I18N = {
     notesPh: 'Pets, crib, special needs...',
     consent: 'I declare that the information provided is true and I authorize the use of my data and the image of my document <strong>exclusively</strong> for identification at check-in and registration with the building’s front desk, in accordance with the Brazilian General Data Protection Law (Law 13.709/2018). The data will be deleted after the end of the stay.',
     errConsent: 'You must accept to continue.',
+    errSend: 'Could not send right now. Check your connection and try again, or contact the host on WhatsApp.',
     alertFix: 'Please check the fields highlighted in red.', alertWait: 'Please wait while the images are processed.',
     submit: 'Submit registration', sending: 'Sending…',
     secure: '🔒 Your data is sent directly to the host and is never made public.',
@@ -348,6 +354,7 @@ const I18N = {
     notesPh: 'Mascotas, cuna, necesidades especiales...',
     consent: 'Declaro que la información es verdadera y autorizo el uso de mis datos y de la imagen de mi documento <strong>exclusivamente</strong> para la identificación en el check-in y el registro en la portería del edificio, conforme a la Ley General de Protección de Datos de Brasil (Ley 13.709/2018). Los datos serán eliminados al finalizar la estadía.',
     errConsent: 'Debes aceptar para continuar.',
+    errSend: 'No se pudo enviar ahora. Revisa tu conexión e inténtalo de nuevo, o habla con el anfitrión por WhatsApp.',
     alertFix: 'Revisa los campos marcados en rojo.', alertWait: 'Espera a que se procesen las imágenes.',
     submit: 'Enviar registro', sending: 'Enviando…',
     secure: '🔒 Los datos se envían directamente al anfitrión y no se publican.',
@@ -659,8 +666,45 @@ form.addEventListener('submit', e => {
   } catch (err) {}
 
   const btn = $('#btnSubmit'); btn.disabled = true; btn.textContent = t.sending;
+  if (CONFIG.SCRIPT_URL) { enviarGoogle(btn); return; }
   HTMLFormElement.prototype.submit.call(form);
 });
+
+/* ---------- Envio pelo Google Apps Script ---------- */
+const toB64 = file => new Promise((ok, fail) => {
+  const r = new FileReader();
+  r.onload = () => ok(String(r.result).split(',')[1]);
+  r.onerror = fail;
+  r.readAsDataURL(file);
+});
+async function enviarGoogle(btn) {
+  const t = T();
+  try {
+    let d = {};
+    try { d = JSON.parse(sessionStorage.getItem('hospede') || '{}'); } catch (e) {}
+    const arq = async inp => inp.files[0]
+      ? { name: inp.files[0].name, type: inp.files[0].type, data: await toB64(inp.files[0]) } : null;
+    const payload = Object.assign({}, d, {
+      idioma: t.langName, lgpd: $('#lgpd').checked,
+      _honey: form.querySelector('[name="_honey"]').value,
+      frente: await arq(frente.input), verso: await arq(verso.input)
+    });
+    // text/plain evita a verificação prévia de CORS, que o Apps Script não responde
+    const r = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
+    const res = await r.json();
+    if (!res.ok) throw new Error(res.erro || 'falha');
+    history.replaceState(null, '', `?enviado=1&lang=${lang}`);
+    showSuccess();
+  } catch (err) {
+    console.error(err);
+    verso.input.disabled = false;
+    btn.disabled = false; btn.textContent = t.submit;
+    const alertBox = $('#formAlert');
+    alertBox.textContent = t.errSend;
+    alertBox.classList.remove('hidden');
+    alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
 
 applyLang(lang, false);
 if (new URLSearchParams(location.search).get('enviado') === '1') showSuccess();
